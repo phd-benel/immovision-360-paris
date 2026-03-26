@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ImmoVision 360 - Livre Web</title>
+  <title>ImmoVision 360 - Support de cours</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" />
@@ -14,39 +14,61 @@
     <div class="topbar-inner">
       <div class="brand">
         <img class="brand-logo" src="logo.png" alt="Logo cours" onerror="this.style.display='none'" />
-        <div class="brand-text">ImmoVision 360 - Support du cours "Collecte et exploration des donnees"</div>
-      </div>
-      <div class="top-links">
-        <span class="chip">Livre Web</span>
-        <span class="chip">Theme clair</span>
+        <div class="brand-text">Support du cours "Collecte et exploration des données"</div>
       </div>
     </div>
   </header>
   <main class="container">
     <section class="hero">
       <div class="hero-content">
-        <h1>Un projet fil rouge sous format livre interactif</h1>
-        <p class="lead">Navigation par chapitres, narration pedagogique, design blanc soft et epure.</p>
-        <div class="btn-row">
-          <a class="btn btn-primary" href="pages/01-introduction.html">Ouvrir le livre</a>
-          <a class="btn btn-soft" href="#sommaire">Voir le sommaire</a>
-          <a class="btn btn-soft" id="resumeReading" style="display:none">Reprendre la lecture</a>
-        </div>
+        <h1>Bienvenue au module</h1>
+        <p class="lead">
+          Dans le cadre de cet enseignement, vous allez realiser un projet FIL ROUGE intensif de 9 HEURES,
+          articule autour de 3 PHASES metodologiques fondamentales. L'idee centrale est de vous mettre dans la peau d'un
+          Data Scientist confronte a la complexite des environnements de production reels: vous ne manipulerez pas de simples
+          fichiers prepares, mais un ecosysteme de donnees brutes et heterogenes.
+        </p>
+        <p class="lead">
+          A chaque etape de ce parcours, vous allez acquerir de nouvelles competences critiques: de la conception
+          d'architectures de stockage (Data Lake vs Data Warehouse) a l'automatisation de pipelines ETL enrichis par l'intelligence
+          artificielle. Votre mission consiste a transformer un flux de donnees multimodales — combinant indicateurs chiffrés,
+          temoignages textuels et analyses visuelles — en un diagnostic strategique rigoureux.
+        </p>
+        <p class="lead">
+          Preparez-vous a construire, de bout en bout, la chaine de valeur qui permettra de repondre aux questionnements complexes
+          d'un decideur urbain.
+        </p>
+        <!-- Boutons de navigation volontairement supprimes pour rester minimal -->
       </div>
-      <img class="cover-image" src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1400&q=80" alt="Ville et intelligence territoriale" />
+      <img class="cover-image" src="Fig1.jpg" alt="Infographie Data Scientist: roles, competences et perspectives" />
     </section>
     <section id="sommaire" class="card section">
-      <h2>Sommaire du livre</h2>
+      <h2>Sommaire du parcours</h2>
       <div class="grid-3">
-        <a class="card" href="pages/01-introduction.html"><strong>01</strong><p>Introduction narrative</p></a>
-        <a class="card" href="pages/02-methodologie.html"><strong>02</strong><p>Methodologie generale</p></a>
-        <a class="card" href="pages/03-collecte.html"><strong>03</strong><p>Phase 1 - Collecte</p></a>
-        <a class="card" href="pages/04-etl.html"><strong>04</strong><p>Phase 2 - ETL multimodal</p></a>
-        <a class="card" href="pages/05-exploration.html"><strong>05</strong><p>Phase 3 - Analyse exploration</p></a>
-        <a class="card" href="pages/06-conclusion.html"><strong>06</strong><p>Conclusion et evaluation</p></a>
+        <a class="card" href="pages/01-introduction.html"><strong>01</strong><p>Problematique du Maire et cadrage du travail d'analyse</p></a>
+        <a class="card" href="pages/02-methodologie.html"><strong>02</strong><p>Methodologie generale: de la collecte au rapport</p></a>
+        <a class="card" href="pages/03-collecte.html"><strong>03</strong><p>Ingestion multimodale, Data Lake et Data Warehouse</p></a>
+        <a class="card" href="pages/04-etl.html"><strong>04</strong><p>ETL: transformer la donnee en format exploitable</p></a>
+        <a class="card" href="pages/05-exploration.html"><strong>05</strong><p>EDA et methodes d'exploration (PSA, ACP/PCA, outliers)</p></a>
+        <a class="card" href="pages/06-conclusion.html"><strong>06</strong><p>Synthese et rapport final au Maire (2 a 5 pages)</p></a>
       </div>
     </section>
-    <footer>ImmoVision 360 - Livre Web pedagogique.</footer>
+    <footer>
+      ImmoVision 360 - Support pedagogique.
+      <span aria-hidden="true"> • </span>
+      By
+      <a
+        href="https://scholar.google.com/citations?user=EdTFt2UAAAAJ&hl=fr"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M3 9.5L12 5l9 4.5-9 4.5-9-4.5Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+          <path d="M7 12v6c0 .8 2.2 2 5 2s5-1.2 5-2v-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <span>Badr-Eddine Benelmostafa</span>
+      </a>
+    </footer>
   </main>
   <script src="assets/js/app.js"></script>
 </body>

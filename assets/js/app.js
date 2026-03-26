@@ -7,7 +7,7 @@
   if (progressEl && progressText) {
     const pct = Math.round((chapterIndex / chapterTotal) * 100);
     progressEl.style.width = pct + "%";
-    progressText.textContent = "Progression du livre: chapitre " + chapterIndex + " / " + chapterTotal;
+    progressText.textContent = "Progression du parcours: chapitre " + chapterIndex + " / " + chapterTotal;
   }
 
   const markButtons = document.querySelectorAll("[data-mark-read]");
