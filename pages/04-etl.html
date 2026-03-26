@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chapitre 4 - ETL Multimodal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/style.css" />
+</head>
+<body data-chapter-index="4" data-chapter-total="6">
+  <header class="topbar"><div class="topbar-inner"><div class="brand"><img class="brand-logo" src="../logo.png" alt="Logo" onerror="this.style.display='none'" /><div class="brand-text">ImmoVision 360</div></div><a class="btn btn-soft" href="../index.html">Sommaire</a></div></header>
+  <main class="container">
+    <div class="progress-wrap"><div class="progress-text" id="progressText"></div><div class="progress-bar"><div class="progress" id="progressBar"></div></div></div>
+    <section class="card">
+      <h2>Chapitre 4 - Phase 2 (3h): ETL multimodal</h2>
+      <div class="grid-2">
+        <div>
+          <p>Transformer la donnee brute en variables utiles pour l'analyse decisionnelle.</p>
+          <details><summary>Texte -> sentiment</summary><p>Pretraiter les avis, appliquer modele pre-entraine, produire score normalise [-1, 1].</p></details>
+          <details><summary>Image -> standing</summary><p>Classer les logements en Luxe/Standard via modele visuel et echantillon de validation.</p></details>
+          <details><summary>Conception SQL en amont</summary><p>Anticiper le schema final avant implementation complete de l'ETL.</p></details>
+          <pre><code>CREATE TABLE mart_property_signals (
+  property_id TEXT PRIMARY KEY,
+  neighborhood TEXT NOT NULL,
+  price_mad NUMERIC(12,2),
+  sentiment_score NUMERIC(5,3),
+  visual_class TEXT CHECK (visual_class IN ('Luxe','Standard')),
+  gentrification_index NUMERIC(6,3),
+  loaded_at TIMESTAMP DEFAULT NOW()
+);
+</code></pre>
+          <button class="btn btn-soft" data-mark-read>Marquer ce chapitre comme lu</button>
+        </div>
+        <img class="chapter-image" src="../schema-etl.png" alt="Schema ETL pedagogique" onerror="this.src='https://images.unsplash.com/photo-1516116216624-53e697fedbea?auto=format&fit=crop&w=1200&q=80'" />
+      </div>
+    </section>
+    <nav class="book-nav">
+      <a class="btn btn-soft" href="03-collecte.html">Chapitre precedent</a>
+      <a class="btn btn-primary" href="05-exploration.html">Chapitre suivant</a>
+    </nav>
+    <footer>Chapitre 4/6</footer>
+  </main>
+  <script src="../assets/js/app.js"></script>
+</body>
+</html>
