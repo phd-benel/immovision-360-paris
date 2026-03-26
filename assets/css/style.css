@@ -73,7 +73,12 @@ h2{margin:.1rem 0 .8rem;font-size:clamp(1.2rem,2.2vw,1.7rem)}
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
 .card{padding:18px}
-.card p,.card li{color:var(--muted);line-height:1.75}
+.card p,.card li{
+  color:var(--muted);
+  line-height:1.75;
+  text-align:justify;
+  text-justify:inter-word;
+}
 .quote{
   background:#f4f7ff;border:1px solid #dce6ff;border-left:4px solid var(--primary);
   border-radius:10px;padding:12px 14px;color:#334155;
