@@ -27,13 +27,13 @@
       <h3>1. Les Sources de Données (Inputs)</h3>
 
       <p class="lead">
-        Vous allez amorcer votre Data Lake à partir de sources issues de portails Open Data (ex: extractions type <em>Inside Airbnb</em> pour la ville de Paris, filtrées sur le centre).
-        On vous fournit initialement deux fichiers "mères" :
+        Vous allez amorcer votre Data Lake à partir de sources issues de portails Open Data. Pour ce projet, nous utilisons les extractions officielles du portail Inside Airbnb (<a href="https://insideairbnb.com/fr/">https://insideairbnb.com/fr/</a>). Ce site milite pour la transparence des données de plateforme. Vous devez télécharger les fichiers correspondant à la ville de Paris (dernière mise à jour disponible) <a href="https://insideairbnb.com/fr/paris/">https://insideairbnb.com/fr/paris/</a>
+        . Vous y trouverez initialement deux fichiers "mères" :
       </p>
 
       <ul>
-        <li><strong><code>listings.csv</code></strong> : Contient toutes les annonces (ID de l'annonce, nom de l'hôte, prix, coordonnées GPS, et surtout la colonne <code>picture_url</code> qui contient le lien web vers la photo haute résolution de l'appartement).</li>
-        <li><strong><code>reviews.csv</code></strong> : Contient l'historique textuel des commentaires laissés par les voyageurs (ID de l'annonce, date, texte brut).</li>
+        <li><strong><code>listings.csv</code></strong>  <a href="https://data.insideairbnb.com/france/ile-de-france/paris/2025-09-12/visualisations/listings.csv">https://data.insideairbnb.com/france/ile-de-france/paris/2025-09-12/visualisations/listings.csv</a>  : Contient toutes les annonces (ID de l'annonce, nom de l'hôte, prix, coordonnées GPS, et surtout la colonne <code>picture_url</code> qui contient le lien web vers la photo haute résolution de l'appartement).</li>
+        <li><strong><code>reviews.csv</code></strong> <a href="https://data.insideairbnb.com/france/ile-de-france/paris/2025-09-12/visualisations/reviews.csv">https://data.insideairbnb.com/france/ile-de-france/paris/2025-09-12/visualisations/reviews.csv</a>  : Contient l'historique textuel des commentaires laissés par les voyageurs (ID de l'annonce, date, texte brut).</li>
       </ul>
 
       <hr style="border:none; border-top:1px dashed var(--border); margin:14px 0;" />
@@ -87,10 +87,10 @@
 
       <hr style="border:none; border-top:1px dashed var(--border); margin:14px 0;" />
 
-      <h3>0. Le Pré-Requis Absolu : L'Audit Éthique et Légal (Le "Serment" de l'Ingénieur)</h3>
+      <h3>Remarque : L'Audit Éthique et Légal (Le "Serment" de l'Ingénieur)</h3>
 
       <p class="lead">
-        Attention : Un Data Engineer n'est pas un pirate informatique. Avant d'écrire la moindre ligne de code pour aspirer des milliers de fichiers, vous devez vous assurer que vous en avez le droit. "Scraper" (extraire) de la donnée sur le web engage votre responsabilité éthique et légale.
+        Un Data Scientist/Engineer n'est pas un pirate informatique. Avant d'écrire la moindre ligne de code pour aspirer des milliers de fichiers, vous devez vous assurer que vous en avez le droit. "Scraper" (extraire) de la donnée sur le web engage votre responsabilité éthique et légale.
       </p>
 
       <p class="lead">
@@ -123,7 +123,7 @@
           <strong>L'Analyse des Licences et du RGPD (La Loi) :</strong>
           <ul>
             <li><em>Le Concept :</em> Les fichiers <code>listings.csv</code> et <code>reviews.csv</code> proviennent de l'Open Data. Mais "Open" ne veut pas dire "sans règles".</li>
-            <li><em>Votre Mission :</em> Vérifier la licence d'utilisation (Est-ce une licence Creative Commons ? Avez-vous le droit de l'utiliser pour un projet commercial ou uniquement académique ?). De plus, vous devez être conscients que les commentaires (<code>reviews.csv</code>) peuvent contenir des données personnelles identifiantes (noms, prénoms). Vous traitez du matériel sensible !</li>
+            <li><em>Votre Mission :</em> Vérifier la licence d'utilisation (Est-ce une licence Creative Commons ? Avez-vous le droit de l'utiliser pour un projet commercial ou uniquement académique ?). Veuillez lire : <a href="https://insideairbnb.com/about/">https://insideairbnb.com/about/</a> + <a href="https://insideairbnb.com/fr/data-policies/ ">https://insideairbnb.com/fr/data-policies/ </a> + <a href="https://insideairbnb.com/fr/get-the-data/">https://insideairbnb.com/fr/get-the-data/</a>  </li>
           </ul>
         </li>
       </ul>
@@ -154,10 +154,10 @@
 
       <hr style="border:none; border-top:1px dashed var(--border); margin:14px 0;" />
 
-      <h3>5. Le Livrable Final : Le "Contrat" README.md</h3>
+      <h3>5. Le Livrable Final</h3>
 
       <p class="lead">
-        Le code seul ne vaut rien s'il n'est pas documenté. Vous devez rédiger un fichier <code>README.md</code> à la racine de votre dossier. Ce fichier est votre rapport de livraison à destination de l'Architecte de Données (votre professeur).
+        Le code seul ne vaut rien s'il n'est pas documenté. Vous devez rédiger un fichier <code>README.md</code> à la racine de votre dossier. Ce fichier est votre rapport de livraison à destination de l'Architecte de Données.
       </p>
 
       <p class="lead"><strong>Le <code>README.md</code> doit obligatoirement contenir ces sections :</strong></p>
@@ -170,7 +170,25 @@
       </ul>
 
       <p class="quote">
-        <strong>Rendu attendu :</strong> Un dossier compressé (ZIP) ou un lien vers un dépôt Git contenant l'architecture exacte, vos deux scripts <code>.py</code> opérationnels, et votre <code>README.md</code> complété. Le dossier <code>images</code> ne doit pas être mis dans le ZIP pour éviter un fichier trop lourd, je relancerai vos scripts pour vérifier qu'ils fonctionnent !
+        <strong>Rendu attendu :</strong> Un lien vers un dépôt Git contenant l'architecture exacte, vos deux scripts <code>.py</code> opérationnels, et votre <code>README.md</code> complété.
+      </p>
+
+      <p class="lead">
+        <strong>(Note importante :</strong> Le dossier <code>images</code> doit rester vide sur GitHub pour éviter un repository trop lourd et saturer les serveurs. Vous conservez bien sûr le dossier rempli sur votre PC local pour vos tests, mais pour empêcher Git de l'envoyer en ligne, vous devez utiliser un fichier <code>.gitignore</code>.)
+      </p>
+
+      <p class="lead">
+        Le <code>.gitignore</code> est un fichier texte placé à la racine de votre projet. Il indique à Git quels fichiers ou dossiers il doit ignorer (ne pas suivre et ne pas uploader). C'est la barrière de sécurité qui sépare votre code (léger) de vos données brutes (lourdes).
+      </p>
+
+      <p class="lead">
+        Créez un fichier nommé exactement <code>.gitignore</code> (attention au point au début) et écrivez simplement cette ligne à l'intérieur :
+      </p>
+
+      <pre><code>data/raw/images/</code></pre>
+
+      <p class="lead">
+        En faisant cela, Git "verra" le dossier sur votre ordinateur, mais il fera comme s'il n'existait pas lors du <code>git commit</code> et du <code>git push</code>.
       </p>
     </section>
     <nav class="book-nav">
