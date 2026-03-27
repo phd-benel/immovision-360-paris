@@ -14,26 +14,164 @@
   <main class="container">
     <div class="progress-wrap"><div class="progress-text" id="progressText"></div><div class="progress-bar"><div class="progress" id="progressBar"></div></div></div>
     <section class="card">
-      <h2>Chapitre 3 - Phase 1 (3h): La collecte</h2>
-      <div class="grid-2">
-        <div>
-          <p>Objectif: transformer un chaos de fichiers en une base fiable et tracable pour les etapes suivantes.</p>
+      <h2>🛠️ TP Phase 1 : Ingénierie du Data Lake "ImmoVision 360"</h2>
+
+      <p class="lead">
+        <strong>Fini la théorie, place à l'ingénierie.</strong> Vous êtes désormais responsables de la création de la zone "Bronze" (Raw Data) de notre projet sur la gentrification du Marais. Votre objectif n'est pas encore d'analyser, mais de <strong>collecter, stocker et certifier</strong> la matière première de manière reproductible et professionnelle.
+      </p>
+
+      <p class="lead">Voici votre cahier des charges strict.</p>
+
+      <hr style="border:none; border-top:1px dashed var(--border); margin:14px 0;" />
+
+      <h3>1. Les Sources de Données (Inputs)</h3>
+
+      <p class="lead">
+        Vous allez amorcer votre Data Lake à partir de sources issues de portails Open Data (ex: extractions type <em>Inside Airbnb</em> pour la ville de Paris, filtrées sur le centre).
+        On vous fournit initialement deux fichiers "mères" :
+      </p>
+
+      <ul>
+        <li><strong><code>listings.csv</code></strong> : Contient toutes les annonces (ID de l'annonce, nom de l'hôte, prix, coordonnées GPS, et surtout la colonne <code>picture_url</code> qui contient le lien web vers la photo haute résolution de l'appartement).</li>
+        <li><strong><code>reviews.csv</code></strong> : Contient l'historique textuel des commentaires laissés par les voyageurs (ID de l'annonce, date, texte brut).</li>
+      </ul>
+
+      <hr style="border:none; border-top:1px dashed var(--border); margin:14px 0;" />
+
+      <h3>2. Architecture du Data Lake (La Rigueur Spatiale)</h3>
+
+      <p class="lead">
+        Un Data Lake n'est pas un dossier "Fourre-tout" sur votre bureau. Vous devez scripter la création d'une arborescence stricte et standardisée. Votre premier livrable doit respecter <strong>exactement</strong> cette hiérarchie physique :
+      </p>
+
+      <pre><code>/ImmoVision360_DataLake
+├── /data
+│   └── /raw
+│       ├── /tabular
+│       │   ├── listings.csv
+│       │   └── reviews.csv
+│       └── /images
+│           └── (Dossier initialement vide, à remplir via script)
+├── /scripts
+│   ├── 01_ingestion_images.py
+│   └── 02_sanity_check.py
+└── README.md</code></pre>
+
+      <p class="quote">
+        <strong>Règle d'or :</strong> Vos scripts Python ne doivent jamais contenir de chemins absolus (ex: <code>C:/Users/MonNom/Desktop/...</code>), mais uniquement des chemins relatifs (ex: <code>../data/raw/...</code>) pour que le projet soit exécutable sur la machine de n'importe quel autre ingénieur.
+      </p>
+
+      <hr style="border:none; border-top:1px dashed var(--border); margin:14px 0;" />
+
+      <h3>3. Processus d'Ingestion &amp; Scraping (Script 1)</h3>
+
+      <p class="lead">
+        Le fichier <code>listings.csv</code> contient des liens vers des images, mais le Data Lake a besoin des <strong>fichiers physiques</strong> (les pixels) pour que la Phase 2 (IA Vision) puisse fonctionner. Vous devez concevoir un script (<code>01_ingestion_images.py</code>) qui va agir comme un aspirateur intelligent.
+      </p>
+
+      <p class="lead"><strong>La logique algorithmique exigée pour ce script :</strong></p>
+      <ol>
+        <li><strong>Lecture du catalogue :</strong> Le script doit ouvrir et lire le fichier <code>listings.csv</code>.</li>
+        <li>
+          <strong>Extraction des cibles :</strong> Pour chaque ligne du fichier, le script doit isoler deux informations vitales :
           <ul>
-            <li>Sources: Inside Airbnb (`listings.csv`, `reviews.csv`) + dossier images.</li>
-            <li>Data Lake: stockage brut, horodate, non destructif.</li>
-            <li>Data Warehouse: structure cible relationnelle pour requetage analytique.</li>
+            <li>La colonne <code>ID</code> (l'identifiant unique de l'appartement, ex: <code>785412</code>).</li>
+            <li>La colonne <code>picture_url</code> (le lien HTTP de la photo).</li>
           </ul>
-          <details>
-            <summary>Consignes pratiques</summary>
-            <p>Concevoir une ingestion batch, controler qualite (doublons, nulls, types), logguer les erreurs et conserver les versions de fichiers.</p>
-          </details>
-          <pre><code>docker compose up -d
-docker ps
-# verifier les services d'ingestion et de base
-</code></pre>
-        </div>
-        <img class="chapter-image" src="../schema-collecte.png" alt="Schema pedagogique collecte" onerror="this.src='https://images.unsplash.com/photo-1495592822108-9e6261896da8?auto=format&fit=crop&w=1200&q=80'" />
-      </div>
+        </li>
+        <li><strong>Le Scraping (Téléchargement) :</strong> Le script doit se connecter à l'URL via une requête réseau, télécharger le fichier image, et le sauvegarder dans le dossier <code>/data/raw/images/</code>.</li>
+        <li><strong>La Règle de Nommage Strict :</strong> Le fichier image sauvegardé DOIT obligatoirement être nommé selon son ID. Si l'ID est <code>785412</code>, l'image doit s'appeler <code>785412.jpg</code>. C'est ce qui permettra de faire la jointure plus tard.</li>
+        <li><strong>Le Pilier d'Idempotence (Obligatoire) :</strong> Avant de télécharger une image, votre script doit vérifier si <code>ID.jpg</code> existe déjà dans le dossier <code>/images/</code>. Si oui, il passe à la suivante sans rien télécharger. Cela vous permet de couper le script à 50% et de le relancer sans écraser ce qui a déjà été fait.</li>
+        <li><strong>Gestion des Exceptions (Try/Except) :</strong> L'internet est instable. Des liens seront morts (Erreur 404), des requêtes vont expirer (Timeout). Votre script ne <strong>doit pas planter</strong>. Il doit intercepter l'erreur, l'afficher dans la console ("Lien mort pour l'ID XYZ"), et continuer son travail jusqu'à la dernière ligne.</li>
+      </ol>
+
+      <hr style="border:none; border-top:1px dashed var(--border); margin:14px 0;" />
+
+      <h3>0. Le Pré-Requis Absolu : L'Audit Éthique et Légal (Le "Serment" de l'Ingénieur)</h3>
+
+      <p class="lead">
+        Attention : Un Data Engineer n'est pas un pirate informatique. Avant d'écrire la moindre ligne de code pour aspirer des milliers de fichiers, vous devez vous assurer que vous en avez le droit. "Scraper" (extraire) de la donnée sur le web engage votre responsabilité éthique et légale.
+      </p>
+
+      <p class="lead">
+        Avant de lancer votre "aspirateur à images", votre script et votre démarche doivent impérativement respecter les 4 Règles d'Or de la Courtoisie Numérique :
+      </p>
+
+      <ul>
+        <li>
+          <strong>La Règle du robots.txt (La Porte d'Entrée) :</strong>
+          <ul>
+            <li><em>Le Concept :</em> Chaque site web sérieux possède un fichier à la racine de son serveur (ex: <code>www.site.com/robots.txt</code>) qui dicte aux machines ce qu'elles ont le droit de regarder ou non.</li>
+            <li><em>Votre Mission :</em> Avant de cibler les URLs des images contenues dans votre CSV, vous devez vérifier mentalement (ou via une brève recherche) si les serveurs d'hébergement autorisent les bots automatisés sur ces chemins spécifiques.</li>
+          </ul>
+        </li>
+        <li>
+          <strong>La Courtoisie Serveur (Le "Rate Limiting") :</strong>
+          <ul>
+            <li><em>Le Concept :</em> Si votre script demande 5 000 images en 2 secondes, le serveur d'en face va considérer cela comme une attaque informatique (DDoS) et va planter, ou bloquer définitivement votre adresse IP (Erreur 429 : Too Many Requests).</li>
+            <li><em>Votre Mission :</em> Votre script Python doit inclure une pause artificielle (un sleep ou délai d'attente) d'une fraction de seconde à quelques secondes entre chaque téléchargement d'image. Oui, votre script mettra plus de temps à tourner, mais c'est la marque d'un code professionnel et respectueux de l'infrastructure d'autrui.</li>
+          </ul>
+        </li>
+        <li>
+          <strong>L'Identification (Le "User-Agent") :</strong>
+          <ul>
+            <li><em>Le Concept :</em> Quand vous naviguez sur le web, votre navigateur dit au serveur : "Bonjour, je suis un humain sur Google Chrome". Quand un script Python se connecte, il dit par défaut : "Bonjour, je suis un script Python". Beaucoup de serveurs bloquent automatiquement les scripts anonymes pour se protéger.</li>
+            <li><em>Votre Mission :</em> Renseignez-vous sur la notion de Headers et de User-Agent dans vos requêtes réseau. Soyez transparents sans pour autant vous faire bloquer bêtement par un pare-feu basique.</li>
+          </ul>
+        </li>
+        <li>
+          <strong>L'Analyse des Licences et du RGPD (La Loi) :</strong>
+          <ul>
+            <li><em>Le Concept :</em> Les fichiers <code>listings.csv</code> et <code>reviews.csv</code> proviennent de l'Open Data. Mais "Open" ne veut pas dire "sans règles".</li>
+            <li><em>Votre Mission :</em> Vérifier la licence d'utilisation (Est-ce une licence Creative Commons ? Avez-vous le droit de l'utiliser pour un projet commercial ou uniquement académique ?). De plus, vous devez être conscients que les commentaires (<code>reviews.csv</code>) peuvent contenir des données personnelles identifiantes (noms, prénoms). Vous traitez du matériel sensible !</li>
+          </ul>
+        </li>
+      </ul>
+
+      <hr style="border:none; border-top:1px dashed var(--border); margin:14px 0;" />
+
+      <h3>4. Le Bilan de Santé de la Donnée (Script 2)</h3>
+
+      <p class="lead">
+        Faire confiance à un téléchargement est une erreur de débutant. Une fois le script 1 terminé, vous devez auditer votre Data Lake. Vous allez coder un second script (<code>02_sanity_check.py</code>) qui fera le contrôle qualité.
+      </p>
+
+      <p class="lead"><strong>La logique algorithmique exigée pour le Sanity Check :</strong></p>
+      <ol>
+        <li><strong>Comptage Théorique :</strong> Le script lit <code>listings.csv</code> et compte le nombre exact de lignes (ex: 5000 annonces). C'est le nombre d'images "attendues".</li>
+        <li><strong>Comptage Physique :</strong> Le script compte le nombre de fichiers <code>.jpg</code> réellement présents dans <code>/data/raw/images/</code> (ex: 4850 images).</li>
+        <li><strong>La Jointure Physique (Le Test Ultime) :</strong> Le script parcourt la liste des IDs du CSV un par un. Pour chaque ID, il vérifie physiquement sur le disque dur si le fichier <code>&lt;ID&gt;.jpg</code> est là.</li>
+        <li>
+          <strong>Génération du Rapport :</strong> Le script doit imprimer dans le terminal un rapport clair :
+          <ul>
+            <li><em>Total annonces CSV : X</em></li>
+            <li><em>Total images téléchargées : Y</em></li>
+            <li><em>Taux de complétion : Z %</em></li>
+            <li><em>Liste des "Orphelins" : (Afficher les 5 premiers IDs dont l'image manque à l'appel).</em></li>
+          </ul>
+        </li>
+      </ol>
+
+      <hr style="border:none; border-top:1px dashed var(--border); margin:14px 0;" />
+
+      <h3>5. Le Livrable Final : Le "Contrat" README.md</h3>
+
+      <p class="lead">
+        Le code seul ne vaut rien s'il n'est pas documenté. Vous devez rédiger un fichier <code>README.md</code> à la racine de votre dossier. Ce fichier est votre rapport de livraison à destination de l'Architecte de Données (votre professeur).
+      </p>
+
+      <p class="lead"><strong>Le <code>README.md</code> doit obligatoirement contenir ces sections :</strong></p>
+      <ul>
+        <li><strong>Titre et Contexte :</strong> Une brève description de la mission (Création du Data Lake pour ImmoVision 360).</li>
+        <li><strong>Structure du Répertoire :</strong> Reproduisez l'arborescence physique de vos dossiers pour expliquer comment vous avez rangé la donnée.</li>
+        <li><strong>Notice d'Exécution :</strong> Expliquez pas à pas comment un autre ingénieur doit lancer vos scripts (ex: "1. Installez telle librairie. 2. Lancez le script 1. 3. Lancez le script 2").</li>
+        <li><strong>Audit des Données (Résultats du Sanity Check) :</strong> Vous devez écrire noir sur blanc les résultats de votre script 2. Je veux y lire le nombre exact d'images que vous avez réussi à ingérer, le nombre d'erreurs rencontrées, et votre taux de réussite.</li>
+        <li><strong>Analyse des Pertes :</strong> Si vous avez 5000 lignes dans le CSV mais seulement 4800 images, rédigez un paragraphe expliquant techniquement <em>pourquoi</em> il y a une déperdition (liens morts expirés par Airbnb, blocage anti-bot, erreurs serveurs, etc.). C'est ici que l'on reconnaît un ingénieur d'un simple codeur.</li>
+      </ul>
+
+      <p class="quote">
+        <strong>Rendu attendu :</strong> Un dossier compressé (ZIP) ou un lien vers un dépôt Git contenant l'architecture exacte, vos deux scripts <code>.py</code> opérationnels, et votre <code>README.md</code> complété. Le dossier <code>images</code> ne doit pas être mis dans le ZIP pour éviter un fichier trop lourd, je relancerai vos scripts pour vérifier qu'ils fonctionnent !
+      </p>
     </section>
     <nav class="book-nav">
       <a class="btn btn-soft" href="02-methodologie.html">Chapitre precedent</a>
