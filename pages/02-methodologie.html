@@ -207,14 +207,133 @@
       
 
       <h3>3. Phase 2 : ETL &amp; Feature Engineering – La Raffinerie de l'IA</h3>
-      <p class="lead">L'ETL (Extract, Transform, Load) est l'étape où vous créez de la valeur. C'est ici que l'IA intervient pour "faire parler" les données muettes.</p>
-      <p class="lead">Extract : Lecture efficace des sources multimodales depuis le Data Lake.</p>
-      <p class="lead"><strong>Transform (Le "Génie" de l'Ingénieur) :</strong></p>
-      <p class="lead">Nettoyage &amp; Normalisation : Gérer les valeurs manquantes ($NaN$), convertir les devises, harmoniser les formats de date.</p>
-      <p class="lead"><strong>Enrichissement (IA) : C'est le cœur du projet. Vous allez créer des Features (variables) qui n'existent pas :</strong></p>
-      <p class="lead">Vision : Transformer une photo en un score de "Standing" (Luxe vs Standard).</p>
-      <p class="lead">NLP : Transformer un texte brut en un score de "Sentiment" ou de "Nuisance".</p>
-      <p class="lead">Load : Injection des données unifiées dans le Data Warehouse (PostgreSQL). Contrairement au Lake, le Warehouse est structuré selon un schéma (en étoile ou flocon) optimisé pour répondre aux questions métier.</p>
+      <p class="lead">
+        Le Data Lake est désormais rempli, mais pour la Maire de Paris, ce réservoir n'est encore qu'un immense "bruit" numérique. Elle ne peut pas fonder une politique d'urbanisme sur 5 000 images éparpillées et 10 000 commentaires bruts. Votre mission en Phase 2 est de <strong>structurer l'invisible</strong>.
+      </p>
+
+      <h3>De la "Vérité Brute" à l'Indicateur Stratégique</h3>
+      <p class="lead">
+        Le Data Lake (Phase 1) contenait la <strong>vérité brute</strong> : des fichiers natifs, intacts, mais totalement illisibles pour un décideur humain. La Phase 2 est l'étape cruciale de la <strong>Transformation</strong>. C'est ici que l'ingénieur intervient pour extraire les données du lac, les nettoyer de leurs scories, et surtout les enrichir avec des indicateurs inédits.
+      </p>
+
+      <p class="lead">Nous allons donner du sens au chaos en transformant :</p>
+      <ul>
+        <li><strong>Des pixels</strong> en scores d'authenticité hôtelière.</li>
+        <li><strong>Du texte</strong> en indices de nuisance sociale.</li>
+        <li><strong>Des chiffres isolés</strong> en une base de données cohérente.</li>
+      </ul>
+
+      <h3>L'Architecture "Silver" : La Naissance de la Connaissance</h3>
+      <p class="lead">
+        En ingénierie de données, nous passons de la couche <strong>Bronze</strong> (le vrac) à la couche <strong>Silver</strong> (la donnée raffinée). Ce processus repose sur un moteur à trois temps que tout Data Scientist doit maîtriser : l'<strong>ETL</strong> (Extract, Transform, Load).
+      </p>
+      <ol>
+        <li><strong>Extract (Extraire) :</strong> Aller chercher les données multimodales (images, textes, CSV) dans le Data Lake.</li>
+        <li><strong>Transform (Transformer) :</strong> Nettoyer les erreurs, normaliser les formats et injecter de l'intelligence pour créer des nouveaux scores.</li>
+        <li><strong>Load (Charger) :</strong> Injecter le résultat final dans un <strong>Data Warehouse</strong>.</li>
+      </ol>
+
+      <h3>L'Objectif Final : Le Data Warehouse</h3>
+      <p class="lead">
+        À la fin de cette phase, l'idée est d'aboutir à un <strong>Data Warehouse</strong> (une base de données structurée, par exemple sous <strong>PostgreSQL</strong>). Contrairement au lac de données, ce "magasin de données" est parfaitement organisé, indexé et <strong>prêt à être analysé et exploré</strong>. C'est cette base de données propre qui permettra de répondre précisément aux questions politiques de la municipalité.
+      </p>
+
+      <hr style="border:none; border-top:1px dashed var(--border); margin:12px 0;" />
+
+      <h3>1. <strong>E</strong>xtract (L'Extraction Intelligente)</h3>
+      <p class="lead">
+        L'extraction est l'acte de "lire" les sources hétérogènes que nous avons sécurisées en Phase 1.
+      </p>
+      <ul>
+        <li><strong>Le défi de la Multimodalité :</strong> Contrairement à un projet classique, l'extraction ici est triple. Vous devez extraire des <strong>flux de texte</strong> (les avis), des <strong>matrices de pixels</strong> (les photos) et des <strong>tables numériques</strong> (les prix).</li>
+        <li><strong>La Connexion aux Sources :</strong> L'ingénieur doit écrire des connecteurs capables de lire aussi bien un fichier local qu'une partition sur un stockage distribué (S3/MinIO).</li>
+        <li><strong>Le filtrage sélectif :</strong> On n'extrait pas forcément tout. Pour gagner du temps, on peut décider d'extraire uniquement les données concernant le périmètre du <strong>Marais</strong>, laissant le reste du Data Lake au repos.</li>
+      </ul>
+      <p class="quote">
+        <strong>Le conseil du pro :</strong> L'extraction doit être <strong>incrémentale</strong>. Si vous avez déjà extrait les données de janvier, votre script doit être capable de ne récupérer que les "nouveautés" de février sans tout recommencer.
+      </p>
+
+      <hr style="border:none; border-top:1px dashed var(--border); margin:12px 0;" />
+
+      <h3>2. <strong>T</strong>ransform (Le Raffinage et l'Enrichissement)</h3>
+      <p class="lead">
+        C'est l'étape la plus longue et la plus complexe (souvent 70% du temps d'un Data Scientist). Elle se divise en deux sous-étapes :
+      </p>
+
+      <h3>A. Le Nettoyage (Data Cleaning)</h3>
+      <p class="lead">On répare la donnée brute pour la rendre mathématiquement exploitable :</p>
+      <ul>
+        <li><strong>Normalisation :</strong> Harmoniser les prix (tous en Euros), les surfaces (tous en <code>m^2</code>) et les formats de dates.</li>
+        <li><strong>Traitement des valeurs manquantes :</strong> Que faire si un hôte n'a pas mis de photo ? On crée une valeur par défaut ou on écarte la ligne pour ne pas fausser l'IA.</li>
+        <li><strong>Dédoublonnement :</strong> Utiliser des algorithmes de "fuzzy matching" pour détecter si deux annonces différentes décrivent en réalité le même appartement.</li>
+      </ul>
+
+      <h3>B. L'Enrichissement IA (La Création de Valeur)</h3>
+      <p class="lead">
+        C'est ici que l'on "augmente" la donnée. <strong>L'idée générale est de créer de nouvelles colonnes (features) qui n'existaient pas au départ :</strong>
+      </p>
+      <ul>
+        <li><strong>L'IA Vision :</strong> Elle scanne les photos et génère une étiquette : <em>"Style Professionnel/Hôtelier"</em> ou <em>"Style Résidentiel/Habité"</em>.</li>
+        <li><strong>L'IA NLP :</strong> Elle analyse le ton des commentaires. Elle ne dit pas juste "positif", elle identifie des thématiques comme <em>"Plainte Nuisance Sonore"</em> ou <em>"Absence d'Hôte Physique"</em>.</li>
+      </ul>
+
+      <hr style="border:none; border-top:1px dashed var(--border); margin:12px 0;" />
+
+      <h3>3. <strong>L</strong>oad (Le Chargement Structuré)</h3>
+      <p class="lead">
+        Une fois la donnée "propre" et "augmentée", elle doit être stockée de manière à ce qu'un humain ou un logiciel de visualisation puisse l'interroger instantanément.
+      </p>
+      <ul>
+        <li><strong>Vers le Data Warehouse (PostgreSQL) :</strong> On injecte les résultats dans une base de données relationnelle. Contrairement au Data Lake, ici chaque donnée a une place précise, une taille définie et un type (ex: <code>Score_Authenticité</code> est un <code>FLOAT</code>).</li>
+        <li><strong>Indexation :</strong> L'ingénieur crée des "index" sur les colonnes clés (comme le quartier ou l'ID de l'hôte) pour que les recherches de la Maire soient ultra-rapides, même sur des millions de lignes.</li>
+        <li><strong>La "Source Unique de Vérité" :</strong> À la fin du <strong>Load</strong>, vous avez une table parfaite où chaque ligne raconte l'histoire complète d'un logement : son prix, son standing détecté par l'IA, et le niveau de nuisance rapporté par les voisins.</li>
+      </ul>
+
+      <hr style="border:none; border-top:1px dashed var(--border); margin:12px 0;" />
+
+      <h3>🚩 Résumé pour vos étudiants : Les Enjeux de l'ETL</h3>
+      <div style="overflow:auto; margin-top:8px;">
+        <table style="width:100%; border-collapse:collapse; background:#fff; border:1px solid var(--border); border-radius:12px; overflow:hidden;">
+          <thead>
+            <tr style="background:#f3f7ff;">
+              <th style="text-align:left; padding:10px; border-bottom:1px solid var(--border);">Étape</th>
+              <th style="text-align:left; padding:10px; border-bottom:1px solid var(--border);">Action de l'Ingénieur</th>
+              <th style="text-align:left; padding:10px; border-bottom:1px solid var(--border);">Résultat pour la Maire</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="padding:10px; border-bottom:1px solid var(--border);"><strong>Extract</strong></td>
+              <td style="padding:10px; border-bottom:1px solid var(--border);">Lire les images, les textes et les prix.</td>
+              <td style="padding:10px; border-bottom:1px solid var(--border);">On a toute la matière première.</td>
+            </tr>
+            <tr>
+              <td style="padding:10px; border-bottom:1px solid var(--border);"><strong>Transform</strong></td>
+              <td style="padding:10px; border-bottom:1px solid var(--border);">Nettoyer les erreurs et calculer des scores IA.</td>
+              <td style="padding:10px; border-bottom:1px solid var(--border);">On comprend enfin le "Pourquoi" de la gentrification.</td>
+            </tr>
+            <tr>
+              <td style="padding:10px;"><strong>Load</strong></td>
+              <td style="padding:10px;">Ranger les données dans un Warehouse SQL.</td>
+              <td style="padding:10px;">On peut générer des cartes et des graphiques en un clic.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <hr style="border:none; border-top:1px dashed var(--border); margin:12px 0;" />
+
+      <h3>💡 Questions à poser aux étudiants pour valider la Phase 2 :</h3>
+      <ol>
+        <li><strong>Fiabilité :</strong> Si votre étape <strong>Transform</strong> échoue sur une image corrompue, est-ce que toute votre pipeline s'arrête (Crash) ou est-ce qu'elle continue en isolant l'erreur (Robustesse) ?</li>
+        <li><strong>Auditabilité :</strong> Si la Maire vous demande <em>"Pourquoi cet appartement a un score de nuisance de 90% ?"</em>, pouvez-vous remonter jusqu'au commentaire brut dans le Data Lake qui a causé ce score ?</li>
+      </ol>
+
+      <p class="quote">
+        <strong>Cette structure vous permet de poser les bases de l'ingénierie avant de plonger, dans le chapitre suivant, dans les algorithmes spécifiques de Vision et de NLP !</strong>
+      </p>
+
+      <p class="lead"><strong>Souhaitez-vous que nous passions à la structure de la <em>Phase 3 (EDA &amp; Storytelling)</em> pour boucler la méthodologie ?</strong></p>
 
       <h3>4. Phase 3 : EDA &amp; Rapport d'Impact – Le Storytelling Décisionnel</h3>
       <p class="lead">L'EDA (Exploratory Data Analysis) n'est pas juste faire des graphiques ; c'est valider ou infirmer les hypothèses du Chapitre 1.</p>
