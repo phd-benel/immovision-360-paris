@@ -22,20 +22,189 @@
 
       <h3>1. La Vue d'Ensemble : La Pipeline du Projet</h3>
       <p class="lead">L'ingénieur ne se contente pas d'analyser ; il construit une "usine" à données. Voici le cheminement critique :</p>
-      <pre><code>$$\text{Problématique (Ch. 1)} \xrightarrow{\text{Phase 1}} \text{Collecte \& Ingestion} \xrightarrow{\text{Phase 2}} \text{ETL \& Enrichissement} \xrightarrow{\text{Phase 3}} \text{EDA \& Storytelling}$$</code></pre>
-
+      <img
+        class="chapter-image"
+        src="../Fig5.png"
+        style="height:auto; margin-top:10px;"
+        onerror="this.onerror=null;this.style.display='none';"
+      />
       <h3>2. Phase 1 : Collecte &amp; Ingestion – Dompter le Chaos du Data Lake</h3>
       <p class="lead">
-        C'est ici que vous gérez la Variété et le Volume. Le but est de créer un Data Lake : un réservoir centralisé où l'on stocke les données sous leur forme native (brute).
+        Pour répondre à la Maire de Paris, nous avons formulé des hypothèses (Gentrification industrielle, déshumanisation, fraude au standing). Le problème ? Aucune donnée unique ne contient la réponse. Pour prouver une intuition politique, l'ingénieur doit fusionner des mondes qui ne se parlent pas. C’est là qu’intervient la Multimodalité. Pour valider nos hypothèses, nous avons besoin de :
       </p>
-      <p class="lead"><strong>Multimodalité et Sources :</strong></p>
-      <p class="lead">Structurées (CSV/SQL) : Les fichiers listings.csv contenant les prix et les caractéristiques des logements.</p>
-      <p class="lead">Semi-structurées (JSON/API) : Interroger des APIs de géolocalisation pour enrichir les quartiers.</p>
-      <p class="lead">Non-structurées (Texte/Images) : Des milliers de commentaires clients et des photos de façades.</p>
-      <p class="lead"><strong>Concepts Clés :</strong></p>
-      <p class="lead">Batch vs Temps Réel : Pour ce projet, nous travaillons en Batch (traitement par lots de fichiers historiques), mais un ingénieur doit anticiper le Temps Réel (streaming) si la Mairie voulait une alerte immédiate lors d'une nouvelle annonce suspecte.</p>
-      <p class="lead">Ingestion "Idempotente" : Votre script d'ingestion doit pouvoir être relancé dix fois sans créer de doublons. C'est la base de la fiabilité.</p>
-      <p class="lead">💡 Conseil d'expert : Ne modifiez jamais les fichiers dans le Data Lake. Gardez toujours une copie "Raw" (brute) pour pouvoir ré-entraîner vos modèles plus tard si vos besoins changent.</p>
+      <ul>
+        <li>Chiffres (Le "Quoi") : Prix, volumes, nombre de biens par hôte.</li>
+        <li>Mots (Le "Comment") : Ressenti des voisins, vocabulaire des voyageurs.</li>
+        <li>Images (Le "Standing") : Détection de l'authenticité vs standardisation hôtelière.</li>
+      </ul>
+
+      <p class="lead">
+        L'objectif de cette phase est la création d'un Data Lake. Contrairement à une base de données classique, le Lake accepte tout sans poser de questions (schéma à la lecture).
+      </p>
+
+      <div class="card" style="margin-top:14px; border:1px solid var(--border);">
+       
+        <p class="lead">
+          Dans une base de données classique comme <strong>MySQL</strong> ou <strong>PostgreSQL</strong>, tout est régi par le <strong>"Schema-on-Write"</strong> (Schéma à l'écriture). Avant d'insérer la moindre donnée, vous devez définir des tables, des colonnes et des types (Integer, Varchar, Date).
+        </p>
+
+        <p class="lead"><strong>Le problème de notre projet "ImmoVision 360" :</strong></p>
+        <ul>
+          <li>Comment stocker une photo haute résolution d'un appartement du Marais dans une cellule de tableau ?</li>
+          <li>Comment stocker des milliers de commentaires textuels sans savoir à l'avance quelle sera leur longueur ou leur langue ?</li>
+          <li>Comment intégrer un fichier CSV brut sans perdre les lignes mal formées ?</li>
+        </ul>
+
+        <p class="quote">
+          <strong>Le constat :</strong> Les bases de données classiques ne sont pas faites pour stocker des <strong>vidéos</strong>, des <strong>images</strong> ou du <strong>CSV en brut</strong>. Elles sont faites pour stocker de l'information déjà "digérée".
+        </p>
+        <p class="lead">
+          Contrairement à la base de données qui est une bibliothèque rangée, le <strong>Data Lake</strong> est un réservoir naturel. Il accepte tout, sans poser de questions. On parle ici de <strong>"Schema-on-Read"</strong> (Schéma à la lecture) : on stocke d'abord, on réfléchira à la structure plus tard, au moment de l'analyse.
+        </p>
+
+        <p class="lead"><strong>Un Data Lake, c'est quoi concrètement ?</strong></p>
+        <p class="lead">
+          Ce n'est pas un logiciel magique, c'est une technologie de <strong>Stockage d'Objets (Object Storage)</strong>. Contrairement à un système de fichiers classique qui organise tout en hiérarchie complexe, l'Object Storage traite chaque donnée (une image, un log, un CSV) comme une unité plate avec un identifiant unique.
+        </p>
+
+        <p class="lead">Les standards de l'industrie pour créer ce Lake sont :</p>
+        <ul>
+          <li><strong>AWS S3 :</strong> Le leader du Cloud.</li>
+          <li><strong>MinIO :</strong> L'alternative Open-Source (que vous pouvez installer sur votre propre serveur) qui simule le fonctionnement de S3.</li>
+          <li><strong>Système de fichiers distribué :</strong> Un serveur de fichiers organisé de manière rigoureuse (ex: <code>/data/raw/</code>).</li>
+        </ul>
+
+        <img
+        class="chapter-image"
+        src="../Fig6.png"
+        style="height:auto; margin-top:10px;"
+        onerror="this.onerror=null;this.style.display='none';"
+      />
+
+        <hr style="border:none; border-top:1px dashed var(--border); margin:12px 0;" />
+
+        <p class="lead">
+          Dans le cadre de la gentrification du Marais, le Data Lake est notre <strong>"scène de crime" intacte</strong>.
+        </p>
+
+        <div style="overflow:auto;">
+          <table style="width:100%; border-collapse:collapse; background:#fff; border:1px solid var(--border); border-radius:12px; overflow:hidden;">
+            <thead>
+              <tr style="background:#f3f7ff;">
+                <th style="text-align:left; padding:10px; border-bottom:1px solid var(--border);">Critère</th>
+                <th style="text-align:left; padding:10px; border-bottom:1px solid var(--border);">Base de Données (MySQL/SQL)</th>
+                <th style="text-align:left; padding:10px; border-bottom:1px solid var(--border);">Data Lake (S3/MinIO/Filesystem)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="padding:10px; border-bottom:1px solid var(--border);"><strong>Données</strong></td>
+                <td style="padding:10px; border-bottom:1px solid var(--border);">Uniquement structurées (Textes courts, nombres).</td>
+                <td style="padding:10px; border-bottom:1px solid var(--border);"><strong>Multimodales</strong> (Images, sons, PDF, JSON).</td>
+              </tr>
+              <tr>
+                <td style="padding:10px; border-bottom:1px solid var(--border);"><strong>Rigueur</strong></td>
+                <td style="padding:10px; border-bottom:1px solid var(--border);">Très forte (Refuse la donnée si elle ne rentre pas dans la case).</td>
+                <td style="padding:10px; border-bottom:1px solid var(--border);"><strong>Nulle</strong> (Accepte tout le "flux" entrant).</td>
+              </tr>
+              <tr>
+                <td style="padding:10px; border-bottom:1px solid var(--border);"><strong>Coût</strong></td>
+                <td style="padding:10px; border-bottom:1px solid var(--border);">Cher (Nécessite beaucoup de puissance calcul).</td>
+                <td style="padding:10px; border-bottom:1px solid var(--border);"><strong>Très faible</strong> (Optimisé pour le stockage de masse).</td>
+              </tr>
+              <tr>
+                <td style="padding:10px;"><strong>Usage</strong></td>
+                <td style="padding:10px;">Application web, transaction bancaire.</td>
+                <td style="padding:10px;"><strong>Data Science, IA, Archivage légal.</strong></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <hr style="border:none; border-top:1px dashed var(--border); margin:12px 0;" />
+
+        <p class="lead">
+          L'objectif de cette phase 1 est de créer cette <strong>Zone de Landing</strong>. C'est le point d'entrée unique de toutes nos sources hétérogènes.
+        </p>
+      <details style="margin-top:12px;">
+        <summary>Voir détails...</summary>
+
+        <h3>🚩 La Check-list de l'Ingénieur </h3>
+
+        <p class="lead">
+          Avant de coder votre script d'ingestion, un ingénieur doit valider ces 7 piliers. Ce ne sont pas des détails, ce sont les fondations de votre architecture de données.
+        </p>
+
+        <h3>1. Format &amp; Préservation (Raw vs Processed)</h3>
+        <p class="lead"><strong>La question :</strong> Dois-je convertir mes images en binaire (Base64) ou mes CSV en formats compressés (Parquet) dès l'entrée ?</p>
+        <p class="lead"><strong>L'élément de réponse :</strong> <strong>NON.</strong> Dans le Data Lake, on garde le <strong>format natif</strong> (.jpg, .csv). Pourquoi ? Parce que si votre futur modèle d'IA a besoin des métadonnées EXIF d'une photo (coordonnées GPS cachées dans l'image), une conversion prématurée pourrait les détruire à jamais.</p>
+
+        <h3>2. Stratégie de Partitionnement (L'Organisation)</h3>
+        <p class="lead"><strong>La question :</strong> Comment organiser mon Lake pour ne pas qu'il devienne un "Data Swamp" (marécage) illisible ?</p>
+        <p class="lead"><strong>L'élément de réponse :</strong> Utilisez une structure <strong>temporelle et thématique</strong>.</p>
+        <ul>
+          <li><em>Exemple :</em> <code>/data/raw/2026-03-27/marais/listings/</code></li>
+          <li><em>Pourquoi ?</em> Cela permet de rejouer les données d'une journée précise en cas d'erreur et facilite le balayage par les outils de calcul (Spark/Python).</li>
+        </ul>
+
+        <h3>3. Vitesse d'Ingestion : Batch vs Streaming</h3>
+        <p class="lead"><strong>La question :</strong> Est-ce que je traite un stock de fichiers (Batch) ou un flux en continu (Streaming) ?</p>
+        <p class="lead"><strong>L'élément de réponse :</strong> Pour l'étude du Marais, nous sommes en <strong>Batch</strong> (fichiers historiques). Cependant, votre code doit être <strong>modulaire</strong>. Un bon ingénieur anticipe le "Temps Réel" : si demain la Mairie veut une alerte dès qu'un nouvel appartement "industriel" est publié, votre script d'ingestion doit pouvoir s'adapter sans être réécrit de zéro.</p>
+
+        <h3>4. Le Principe d'Idempotence (La Sécurité)</h3>
+        <p class="lead"><strong>La question :</strong> Que se passe-t-il si mon script d'ingestion plante à 50% à cause d'une coupure réseau ?</p>
+        <p class="lead"><strong>L'élément de réponse :</strong> Votre opération doit être <strong>Idempotente</strong>. Cela signifie que relancer le script 1 fois ou 100 fois doit donner le même résultat final, sans créer de doublons.</p>
+        <p class="lead"><em>Technique :</em> Vérifiez si le fichier existe déjà dans le Lake avant de le copier, ou utilisez des sommes de contrôle (Hash MD5).</p>
+
+        <h3>5. Intégrité &amp; Cohérence (La Jointure Physique)</h3>
+        <p class="lead"><strong>La question :</strong> Ai-je bien une image pour chaque ligne de mon fichier CSV ?</p>
+        <p class="lead"><strong>L'élément de réponse :</strong> C'est le test de la <strong>"Jointure Orpheline"</strong>. Un Data Lake n'impose pas de contrainte d'intégrité (contrairement au SQL). C'est donc à votre script de vérifier que l'image <code>img_123.jpg</code> citée dans le listing existe réellement dans le dossier images. Sans cette vérification, votre Phase 2 (IA) plantera sur des fichiers inexistants.</p>
+
+        <h3>6. Vérification Quantitative (Le Bilan)</h3>
+        <p class="lead"><strong>La question :</strong> Ai-je bien reçu 100% des fichiers attendus ?</p>
+        <p class="lead"><strong>L'élément de réponse :</strong> Ne faites jamais confiance au transfert. Votre script d'ingestion doit générer un <strong>log de succès</strong>.</p>
+        <p class="lead"><em>Exemple :</em> "1500 lignes lues dans le CSV, 1498 images trouvées, 2 erreurs logguées". Cette traçabilité est la signature d'un travail professionnel.</p>
+
+        <h3>7. Architecture de Stockage : Local ou Distribué ?</h3>
+        <p class="lead"><strong>La question :</strong> Mon disque dur suffit-il, ou dois-je passer sur une architecture distribuée ?</p>
+        <p class="lead"><strong>L'élément de réponse :</strong> Tout dépend du Volume et de la Disponibilité.</p>
+        <ul>
+          <li><strong>Stockage Local (Monolithique) :</strong> Idéal pour le prototypage ou les petits volumes (ex: 5 000 images du Marais). C'est simple, mais si votre disque crash, tout est perdu. C'est un "Single Point of Failure".</li>
+          <li><strong>Stockage Distribué (HDFS, S3, MinIO Cluster) :</strong> La donnée est découpée en morceaux (shards) et répliquée sur plusieurs serveurs physiques.</li>
+        </ul>
+        <p class="lead"><strong>Avantage :</strong> Si un serveur tombe, la donnée reste accessible ailleurs (Haute Disponibilité). Vous pouvez stocker des Pétaoctets de photos de tout Paris sans changer de code.</p>
+        <p class="lead"><strong>Technique :</strong> On utilise souvent le protocole S3 (Simple Storage Service) qui est devenu la norme. Même en local, on simule ce comportement avec MinIO pour que notre code soit "Cloud-Ready".</p>
+
+        <div style="overflow:auto; margin-top:10px;">
+          <table style="width:100%; border-collapse:collapse; background:#fff; border:1px solid var(--border); border-radius:12px; overflow:hidden;">
+            <thead>
+              <tr style="background:#f3f7ff;">
+                <th style="text-align:left; padding:10px; border-bottom:1px solid var(--border);">Pilier</th>
+                <th style="text-align:left; padding:10px; border-bottom:1px solid var(--border);">Question de l'Ingénieur</th>
+                <th style="text-align:left; padding:10px; border-bottom:1px solid var(--border);">Concept Clé</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td style="padding:10px; border-bottom:1px solid var(--border);">1. Format</td><td style="padding:10px; border-bottom:1px solid var(--border);">Raw (Brut) ou Transformé ?</td><td style="padding:10px; border-bottom:1px solid var(--border);">Native Preservation</td></tr>
+              <tr><td style="padding:10px; border-bottom:1px solid var(--border);">2. Organisation</td><td style="padding:10px; border-bottom:1px solid var(--border);">Comment ranger mes fichiers ?</td><td style="padding:10px; border-bottom:1px solid var(--border);">Time Partitioning</td></tr>
+              <tr><td style="padding:10px; border-bottom:1px solid var(--border);">3. Vitesse</td><td style="padding:10px; border-bottom:1px solid var(--border);">Batch ou Streaming ?</td><td style="padding:10px; border-bottom:1px solid var(--border);">Modularity</td></tr>
+              <tr><td style="padding:10px; border-bottom:1px solid var(--border);">4. Sécurité</td><td style="padding:10px; border-bottom:1px solid var(--border);">Que se passe-t-il si ça plante à 50% ?</td><td style="padding:10px; border-bottom:1px solid var(--border);">Idempotence</td></tr>
+              <tr><td style="padding:10px; border-bottom:1px solid var(--border);">5. Intégrité</td><td style="padding:10px; border-bottom:1px solid var(--border);">Manque-t-il des images par rapport au CSV ?</td><td style="padding:10px; border-bottom:1px solid var(--border);">Physical Join Check</td></tr>
+              <tr><td style="padding:10px; border-bottom:1px solid var(--border);">6. Quantité</td><td style="padding:10px; border-bottom:1px solid var(--border);">Ai-je bien 100% du flux source ?</td><td style="padding:10px; border-bottom:1px solid var(--border);">Audit Logging</td></tr>
+              <tr><td style="padding:10px;">7. Scalabilité</td><td style="padding:10px;">Un seul disque ou plusieurs serveurs ?</td><td style="padding:10px;">Distributed Storage (S3/MinIO)</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 style="margin-top:14px;">Résumé :</h3>
+        <p class="lead">
+          En Phase 1, vous n'êtes pas encore un analyste, vous êtes un <strong>Logisticien</strong>. Votre but est de garantir que la "matière première" (la donnée) arrive à l'usine (la Phase 2) de manière complète, saine et reproductible.
+        </p>
+      </details>
+
+      </div>
+
+      
 
       <h3>3. Phase 2 : ETL &amp; Feature Engineering – La Raffinerie de l'IA</h3>
       <p class="lead">L'ETL (Extract, Transform, Load) est l'étape où vous créez de la valeur. C'est ici que l'IA intervient pour "faire parler" les données muettes.</p>
