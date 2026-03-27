@@ -17,7 +17,7 @@
       <h2>🛠️ TP Phase 1 : Ingénierie du Data Lake "ImmoVision 360"</h2>
 
       <p class="lead">
-        <strong>Fini la théorie, place à l'ingénierie.</strong> Vous êtes désormais responsables de la création de la zone "Bronze" (Raw Data) de notre projet sur la gentrification du Marais. Votre objectif n'est pas encore d'analyser, mais de <strong>collecter, stocker et certifier</strong> la matière première de manière reproductible et professionnelle.
+        <strong>Fini la théorie, place à l'ingénierie.</strong> Vous êtes désormais responsables de la création de la zone "Bronze" (Raw Data) de notre projet sur la gentrification de l’Élysée. Votre objectif n'est pas encore d'analyser, mais de <strong>collecter, stocker et certifier</strong> la matière première de manière reproductible et professionnelle.
       </p>
 
       <p class="lead">Voici votre cahier des charges strict.</p>
@@ -32,13 +32,13 @@
       </p>
 
       <ul>
-        <li><strong><code>listings.csv</code></strong>  <a href="https://data.insideairbnb.com/france/ile-de-france/paris/2025-09-12/visualisations/listings.csv">https://data.insideairbnb.com/france/ile-de-france/paris/2025-09-12/visualisations/listings.csv</a>  : Contient toutes les annonces (ID de l'annonce, nom de l'hôte, prix, coordonnées GPS, et surtout la colonne <code>picture_url</code> qui contient le lien web vers la photo haute résolution de l'appartement).</li>
-        <li><strong><code>reviews.csv</code></strong> <a href="https://data.insideairbnb.com/france/ile-de-france/paris/2025-09-12/visualisations/reviews.csv">https://data.insideairbnb.com/france/ile-de-france/paris/2025-09-12/visualisations/reviews.csv</a>  : Contient l'historique textuel des commentaires laissés par les voyageurs (ID de l'annonce, date, texte brut).</li>
+        <li><strong><code>listings.csv</code></strong>  <a href="https://data.insideairbnb.com/france/ile-de-france/paris/2025-09-12/data/listings.csv.gz">https://data.insideairbnb.com/france/ile-de-france/paris/2025-09-12/visualisations/listings.csv</a>  : Contient toutes les annonces (ID de l'annonce, nom de l'hôte, prix, coordonnées GPS, et surtout la colonne <code>picture_url</code> qui contient le lien web vers la photo haute résolution de l'appartement).</li>
+        <li><strong><code>reviews.csv</code></strong> <a href="https://data.insideairbnb.com/france/ile-de-france/paris/2025-09-12/data/reviews.csv.gz">https://data.insideairbnb.com/france/ile-de-france/paris/2025-09-12/visualisations/reviews.csv</a>  : Contient l'historique textuel des commentaires laissés par les voyageurs (ID de l'annonce, date, texte brut).</li>
       </ul>
 
       <hr style="border:none; border-top:1px dashed var(--border); margin:14px 0;" />
 
-      <h3>2. Architecture du Data Lake (La Rigueur Spatiale)</h3>
+      <h3>2. Architecture du Data Lake</h3>
 
       <p class="lead">
         Un Data Lake n'est pas un dossier "Fourre-tout" sur votre bureau. Vous devez scripter la création d'une arborescence stricte et standardisée. Votre premier livrable doit respecter <strong>exactement</strong> cette hiérarchie physique :

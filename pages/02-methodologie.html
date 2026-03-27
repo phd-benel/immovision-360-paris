@@ -50,7 +50,7 @@
 
         <p class="lead"><strong>Le problème de notre projet "ImmoVision 360" :</strong></p>
         <ul>
-          <li>Comment stocker une photo haute résolution d'un appartement du Marais dans une cellule de tableau ?</li>
+          <li>Comment stocker une photo haute résolution d'un appartement de l’Élysée dans une cellule de tableau ?</li>
           <li>Comment stocker des milliers de commentaires textuels sans savoir à l'avance quelle sera leur longueur ou leur langue ?</li>
           <li>Comment intégrer un fichier CSV brut sans perdre les lignes mal formées ?</li>
         </ul>
@@ -84,7 +84,7 @@
         <hr style="border:none; border-top:1px dashed var(--border); margin:12px 0;" />
 
         <p class="lead">
-          Dans le cadre de la gentrification du Marais, le Data Lake est notre <strong>"scène de crime" intacte</strong>.
+          Dans le cadre de la gentrification de l’Élysée, le Data Lake est notre <strong>"scène de crime" intacte</strong>.
         </p>
 
         <div style="overflow:auto;">
@@ -149,7 +149,7 @@
 
         <h4>3. Vitesse d'Ingestion : Batch vs Streaming</h4>
         <p class="lead"><strong>La question :</strong> Est-ce que je traite un stock de fichiers (Batch) ou un flux en continu (Streaming) ?</p>
-        <p class="lead"><strong>L'élément de réponse :</strong> Pour l'étude du Marais, nous sommes en <strong>Batch</strong> (fichiers historiques). Cependant, votre code doit être <strong>modulaire</strong>. Un bon ingénieur anticipe le "Temps Réel" : si demain la Mairie veut une alerte dès qu'un nouvel appartement "industriel" est publié, votre script d'ingestion doit pouvoir s'adapter sans être réécrit de zéro.</p>
+        <p class="lead"><strong>L'élément de réponse :</strong> Pour l'étude de l’Élysée, nous sommes en <strong>Batch</strong> (fichiers historiques). Cependant, votre code doit être <strong>modulaire</strong>. Un bon ingénieur anticipe le "Temps Réel" : si demain la Mairie veut une alerte dès qu'un nouvel appartement "industriel" est publié, votre script d'ingestion doit pouvoir s'adapter sans être réécrit de zéro.</p>
 
         <h4>4. Le Principe d'Idempotence (La Sécurité)</h4>
         <p class="lead"><strong>La question :</strong> Que se passe-t-il si mon script d'ingestion plante à 50% à cause d'une coupure réseau ?</p>
@@ -169,7 +169,7 @@
         <p class="lead"><strong>La question :</strong> Mon disque dur suffit-il, ou dois-je passer sur une architecture distribuée ?</p>
         <p class="lead"><strong>L'élément de réponse :</strong> Tout dépend du Volume et de la Disponibilité.</p>
         <ul>
-          <li><strong>Stockage Local (Monolithique) :</strong> Idéal pour le prototypage ou les petits volumes (ex: 5 000 images du Marais). C'est simple, mais si votre disque crash, tout est perdu. C'est un "Single Point of Failure".</li>
+          <li><strong>Stockage Local (Monolithique) :</strong> Idéal pour le prototypage ou les petits volumes (ex: 5 000 images de l’Élysée). C'est simple, mais si votre disque crash, tout est perdu. C'est un "Single Point of Failure".</li>
           <li><strong>Stockage Distribué (HDFS, S3, MinIO Cluster) :</strong> La donnée est découpée en morceaux (shards) et répliquée sur plusieurs serveurs physiques.</li>
         </ul>
         <p class="lead"><strong>Avantage :</strong> Si un serveur tombe, la donnée reste accessible ailleurs (Haute Disponibilité). Vous pouvez stocker des Pétaoctets de photos de tout Paris sans changer de code.</p>
@@ -253,7 +253,7 @@
       <ul>
         <li><strong>Le défi de la Multimodalité :</strong> Contrairement à un projet classique, l'extraction ici est triple. Vous devez extraire des <strong>flux de texte</strong> (les avis), des <strong>matrices de pixels</strong> (les photos) et des <strong>tables numériques</strong> (les prix).</li>
         <li><strong>La Connexion aux Sources :</strong> L'ingénieur doit écrire des connecteurs capables de lire aussi bien un fichier local qu'une partition sur un stockage distribué (S3/MinIO).</li>
-        <li><strong>Le filtrage sélectif :</strong> On n'extrait pas forcément tout. Pour gagner du temps, on peut décider d'extraire uniquement les données concernant le périmètre du <strong>Marais</strong>, laissant le reste du Data Lake au repos.</li>
+        <li><strong>Le filtrage sélectif :</strong> On n'extrait pas forcément tout. Pour gagner du temps, on peut décider d'extraire uniquement les données concernant le périmètre de l’<strong>Élysée</strong>, laissant le reste du Data Lake au repos.</li>
       </ul>
      
       <hr style="border:none; border-top:1px dashed var(--border); margin:12px 0;" />
@@ -271,7 +271,7 @@
       <ul>
         <li><strong>Normalisation des formats :</strong> S'assurer que les prix sont tous en Euros, les surfaces en <code>m^2</code>, et les dates au format standard (<code>AAAA-MM-JJ</code>).</li>
         <li><strong>Gestion des valeurs aberrantes (Outliers) :</strong> Identifier les données qui faussent les statistiques (ex: un appartement de 2 <code>m^2</code> ou un prix de 0 €).</li>
-        <li><strong>Dédoublonnement :</strong> Fusionner les annonces identiques présentes sur plusieurs plateformes pour ne pas fausser le volume réel de l'offre dans le Marais.</li>
+        <li><strong>Dédoublonnement :</strong> Fusionner les annonces identiques présentes sur plusieurs plateformes pour ne pas fausser le volume réel de l'offre dans l’Élysée.</li>
       </ul>
 
       <h4>B. L'Enrichissement (Donner de la profondeur à la donnée)</h4>
@@ -315,7 +315,7 @@
 
       
       <p class="quote">
-        <strong>Règle d'or :</strong> Une fois le Load terminé, votre Data Warehouse devient la seule et unique source de vérité. Si quelqu'un pose une question sur les prix dans le Marais, il ne doit plus regarder le CSV d'origine ni le Data Lake, mais uniquement cette base PostgreSQL. C'est la garantie que tout le monde travaille sur les mêmes chiffres validés.
+        <strong>Règle d'or :</strong> Une fois le Load terminé, votre Data Warehouse devient la seule et unique source de vérité. Si quelqu'un pose une question sur les prix dans l’Élysée, il ne doit plus regarder le CSV d'origine ni le Data Lake, mais uniquement cette base PostgreSQL. C'est la garantie que tout le monde travaille sur les mêmes chiffres validés.
       </p>
       <hr style="border:none; border-top:1px dashed var(--border); margin:12px 0;" />
 
@@ -339,7 +339,7 @@
 
       <ul>
         <li><strong>Distinguish Attributes :</strong> Identifier quelles colonnes sont des catégories (quartiers) et lesquelles sont des mesures (prix, scores).</li>
-        <li><strong>Univariate Analysis :</strong> Regarder chaque variable seule. Exemple : Quelle est la moyenne des prix dans le Marais ?</li>
+        <li><strong>Univariate Analysis :</strong> Regarder chaque variable seule. Exemple : Quelle est la moyenne des prix dans l’Élysée ?</li>
         <li><strong>Bi-/Multivariate Analysis :</strong> C'est le cœur du projet. On croise les variables. Exemple : Est-ce que le score de "Gentrification" augmente quand le prix augmente ?</li>
         <li><strong>Detect Aberrant/Missing Values :</strong> Traiter les derniers oublis ou erreurs de saisie.</li>
         <li><strong>Detect Outliers :</strong> Isoler les cas extrêmes (l'hôte qui possède 100 appartements à lui seul).</li>
@@ -368,7 +368,7 @@
       </p>
 
       <ul>
-        <li><strong>L'Hypothèse de la Déshumanisation (Analyse Textuelle) :</strong> En croisant les commentaires et les scores de sentiment, vous prouvez si le lien social se brise réellement. L'absence physique des hôtes et la multiplication des "boîtes à clés" sont-elles devenues la norme dans le Marais ?</li>
+        <li><strong>L'Hypothèse de la Déshumanisation (Analyse Textuelle) :</strong> En croisant les commentaires et les scores de sentiment, vous prouvez si le lien social se brise réellement. L'absence physique des hôtes et la multiplication des "boîtes à clés" sont-elles devenues la norme dans l’Élysée ?</li>
         <li><strong>L'Hypothèse de la "Machine à Cash" (Analyse Prix &amp; Volume) :</strong> Vos corrélations montrent-elles un lien direct entre la hausse des loyers pour les Parisiens et la concentration massive de biens entre les mains de quelques multi-propriétaires ?</li>
         <li><strong>L'Hypothèse de la Standardisation (Analyse Image) :</strong> Vos scores d'authenticité confirment-ils que des immeubles entiers ont été transformés en "produits financiers" uniformes, vidés de toute âme résidentielle ?</li>
       </ul>
