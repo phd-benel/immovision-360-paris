@@ -53,12 +53,13 @@
 │       └── /images
 │           └── (Dossier initialement vide, à remplir via script)
 ├── /scripts
+│   ├── 00_data.ipynb 
 │   ├── 01_ingestion_images.py
 │   └── 02_sanity_check.py
 └── README.md</code></pre>
 
       <p class="quote">
-        <strong>Règle d'or :</strong> Vos scripts Python ne doivent jamais contenir de chemins absolus (ex: <code>C:/Users/MonNom/Desktop/...</code>), mais uniquement des chemins relatifs (ex: <code>../data/raw/...</code>) pour que le projet soit exécutable sur la machine de n'importe quel autre ingénieur.
+        Le notebook 00_data.ipynb <a href="https://drive.google.com/file/d/1dypdCiU7trUjcqLTlPDZHCCwebR0NyAe/view?usp=sharing">https://drive.google.com/file/d/1dypdCiU7trUjcqLTlPDZHCCwebR0NyAe/view?usp=sharing</a> a pour objectif de vous offrir un premier contact avec les données Airbnb de Paris. Cette étape est cruciale pour appréhender les enjeux du projet et anticiper les risques techniques ou méthodologiques dès le début de votre analyse. Il vous permettra de charger les fichiers listings.csv et reviews.csv depuis votre Google Drive, d'obtenir un aperçu général de chaque DataFrame (nombre de lignes, colonnes, premières entrées), d'examiner un enregistrement unique en détail pour comprendre la structure des données, d'afficher les commentaires spécifiques associés à une annonce, et enfin, d'analyser les quartiers disponibles en listant les noms uniques et en comptant les annonces par quartier.
       </p>
 
       <hr style="border:none; border-top:1px dashed var(--border); margin:14px 0;" />
