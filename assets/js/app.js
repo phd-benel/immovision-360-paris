@@ -35,4 +35,121 @@
       resumeLink.style.display = "inline-block";
     }
   }
+
+  function getCookie(name) {
+    const m = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
+    return m ? decodeURIComponent(m[2]) : null;
+  }
+
+  function setLangCookie(value) {
+    const encoded = encodeURIComponent(value);
+    document.cookie = "googtrans=" + encoded + "; path=/; max-age=31536000; SameSite=Lax";
+  }
+
+  function getCurrentLang() {
+    const fromCookie = getCookie("googtrans");
+    if (fromCookie && fromCookie.indexOf("/fr/") === 0) {
+      return fromCookie.split("/")[2] || "fr";
+    }
+    return localStorage.getItem("immovision_lang") || "fr";
+  }
+
+  function setActiveLangButton(lang) {
+    document.querySelectorAll(".lang-btn").forEach((btn) => {
+      btn.classList.toggle("active", btn.dataset.lang === lang);
+    });
+  }
+
+  function waitForTranslateCombo(timeoutMs) {
+    return new Promise((resolve) => {
+      const start = Date.now();
+      const timer = setInterval(() => {
+        const combo = document.querySelector(".goog-te-combo");
+        if (combo) {
+          clearInterval(timer);
+          resolve(combo);
+          return;
+        }
+        if (Date.now() - start > timeoutMs) {
+          clearInterval(timer);
+          resolve(null);
+        }
+      }, 120);
+    });
+  }
+
+  async function applyLanguage(lang, allowReloadFallback) {
+    localStorage.setItem("immovision_lang", lang);
+    setLangCookie("/fr/" + lang);
+    setActiveLangButton(lang);
+
+    const combo = await waitForTranslateCombo(3500);
+    if (combo) {
+      if (combo.value !== lang) {
+        combo.value = lang;
+        combo.dispatchEvent(new Event("change"));
+      }
+      return;
+    }
+
+    if (allowReloadFallback) {
+      window.location.reload();
+    }
+  }
+
+  function injectLanguageSwitcher() {
+    const topbarInner = document.querySelector(".topbar-inner");
+    if (!topbarInner) return;
+
+    const switcher = document.createElement("div");
+    switcher.className = "lang-switch";
+    switcher.innerHTML =
+      '<button type="button" class="lang-btn" data-lang="fr" aria-label="Basculer en français">🇫🇷 FR</button>' +
+      '<button type="button" class="lang-btn" data-lang="en" aria-label="Switch to English">🇬🇧 EN</button>' +
+      '<div id="google_translate_element" class="google-translate-mount" aria-hidden="true"></div>';
+
+    topbarInner.appendChild(switcher);
+
+    const current = getCurrentLang();
+    switcher.querySelectorAll(".lang-btn").forEach((btn) => {
+      if (btn.dataset.lang === current) btn.classList.add("active");
+      btn.addEventListener("click", () => {
+        const nextLang = btn.dataset.lang;
+        if (nextLang !== getCurrentLang()) applyLanguage(nextLang, true);
+      });
+    });
+  }
+
+  function loadGoogleTranslate() {
+    const scriptId = "google-translate-script";
+    if (document.getElementById(scriptId)) return;
+
+    window.googleTranslateElementInit = function () {
+      if (!window.google || !window.google.translate) return;
+      // eslint-disable-next-line no-new
+      new window.google.translate.TranslateElement(
+        {
+          pageLanguage: "fr",
+          includedLanguages: "fr,en",
+          autoDisplay: false
+        },
+        "google_translate_element"
+      );
+    };
+
+    const script = document.createElement("script");
+    script.id = scriptId;
+    script.src = "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
+    script.async = true;
+    document.head.appendChild(script);
+  }
+
+  const preferred = getCurrentLang();
+  setLangCookie("/fr/" + preferred);
+  injectLanguageSwitcher();
+  loadGoogleTranslate();
+  // Apply persisted language once the widget is ready.
+  setTimeout(() => {
+    applyLanguage(preferred, false);
+  }, 600);
 })();
