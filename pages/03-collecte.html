@@ -107,6 +107,8 @@
           <ul>
             <li><em>Le Concept :</em> Chaque site web sérieux possède un fichier à la racine de son serveur (ex: <code>www.site.com/robots.txt</code>) qui dicte aux machines ce qu'elles ont le droit de regarder ou non.</li>
             <li><em>Votre Mission :</em> Avant de cibler les URLs des images contenues dans votre CSV, vous devez vérifier mentalement (ou via une brève recherche) si les serveurs d'hébergement autorisent les bots automatisés sur ces chemins spécifiques.</li>
+            <img src="../Figures/Fig13.png" class="chapter-image" style="width:100%; height:auto;" />
+
           </ul>
         </li>
         <li>
@@ -211,7 +213,9 @@
         Créez un fichier nommé exactement <code>.gitignore</code> (attention au point au début) et écrivez simplement cette ligne à l'intérieur :
       </p>
 
-      <pre><code>data/raw/images/</code></pre>
+      <pre><code>data/raw/images/*</code></pre>
+      <pre><code>data/raw/texts/*</code></pre>*
+      <pre><code>data/raw/tabular/*.csv</code></pre>
 
       <p class="lead">
         En faisant cela, Git "verra" le dossier sur votre ordinateur, mais il fera comme s'il n'existait pas lors du <code>git commit</code> et du <code>git push </code>.
