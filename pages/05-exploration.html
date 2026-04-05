@@ -175,26 +175,79 @@ psql -U postgres -d immovision -f import_elysee_tabular.sql</code></pre>
       <h3>3. Parcours EDA — Bloc A : cadrage métier et feuille de route</h3>
 
       <p class="lead">
-        <strong>Idée clé.</strong> En entreprise, on ne lance pas matplotlib au hasard : on part des <strong>questions métier</strong>, puis on choisit les <strong>variables</strong> et les <strong>graphiques</strong> qui peuvent y répondre — ou montrer que la donnée ne permet pas encore de trancher. L’EDA exploratoire sert à <strong>tester des hypothèses</strong> et à <strong>quantifier</strong>, pas à « prouver ce qu’on veut ».
+        Imaginez que vous présentiez votre premier graphique à la Maire de Paris. Elle vous interrompt : <em>« C’est joli, mais qu’est-ce que ça répond à ma question ? »</em> Ce moment, tout le monde l’a vécu une fois. Il distingue l’analyste qui <strong>cadre</strong> son travail de celui qui accumule des courbes parce que le logiciel les propose. Le <strong>Bloc&nbsp;A</strong> ne produit encore aucune figure définitive : il construit la <strong>feuille de route</strong> — le document qui dit : voici ce que nous cherchons à éclairer, voici avec quelles colonnes, voici comment nous le montrerons. C’est une étape de <strong>traduction</strong> entre le langage du politique (inquiétudes, quartiers, « tourisme qui étouffe ») et le langage de la table SQL (identifiants, pourcentages, codes entiers).
       </p>
 
+      <h4>Pourquoi ne pas ouvrir Python tout de suite ?</h4>
       <p class="lead">
-        <strong>Méthode.</strong> Reprenez le Chapitre&nbsp;1 (brief de la Mairie). Pour chaque grande question (lien prix / nuisance / standing marketing, concentration des offres, profil « pro » vs résidentiel, etc.), listez les colonnes de <code>elysee_tabular</code> qui en sont des <strong>proxies</strong> (approximation mesurable). Exemples de lecture : <code>calculated_host_listings_count</code> pour la concentration côté hôte ; <code>availability_365</code> pour l’usage type location ; <code>host_response_rate_num</code> et <code>host_response_time_code</code> pour un indicateur de réactivité « gestion professionnelle » ; <code>standardization_score</code> et <code>neighborhood_impact_score</code> pour les dimensions image et texte déjà agrégées.
+        L’<strong>analyse exploratoire des données</strong>, souvent abrégée <strong>EDA</strong> (<em>Exploratory Data Analysis</em>), désigne l’ensemble des démarches pour <strong>comprendre</strong> un jeu de données avant d’en tirer des conclusions fermes. Mais « explorer » ne veut pas dire « tout tracer au hasard ». En pratique professionnelle, on distingue souvent la <strong>pêche au graphique</strong> — on fait défiler des corrélations jusqu’à trouver quelque chose d’intéressant — de la démarche <strong>hypothético-déductive</strong> : on part d’une question, on choisit des indicateurs, on vérifie si les données soutiennent ou infirment une intuition. Pour un rapport destiné à un décideur, la seconde approche est la seule <strong>défendable</strong> : elle permet d’expliquer <em>pourquoi</em> ce graphique existe, et ce qu’il ne montre <em>pas</em>.
       </p>
 
+      <h4>Questions métier, hypothèses et opérationnalisation</h4>
       <p class="lead">
-        <strong>Astuce.</strong> Construisez un tableau à trois colonnes : <em>Question ou hypothèse</em> → <em>Variable(s) utilisée(s)</em> → <em>Type de graphique envisagé</em> (histogramme, barres, boxplot, scatter, heatmap de corrélation…). Si une case reste vide, c’est un signal : soit la question n’est pas encore operationalisable, soit il manque une donnée (à dire explicitement dans le rapport).
+        Une <strong>question métier</strong> est une interrogation formulée dans les termes du commanditaire : par exemple, « les logements les plus disponibles à la location sont-ils aussi ceux qui ressemblent le plus à des catalogues ? » Elle n’est pas encore mesurable telle quelle. Pour l’<strong>opérationnaliser</strong>, c’est-à-dire la rendre calculable, vous devez la relier à des <strong>variables</strong> présentes dans votre table — des colonnes dont vous connaissez le sens grâce au dictionnaire (section&nbsp;2).
+      </p>
+      <p class="lead">
+        Une <strong>hypothèse</strong> est une réponse provisoire et testable à cette question : « Je soupçonne que oui, et je vais vérifier si, dans les données, la disponibilité annuelle et le score de standardisation tendent à varier ensemble. » L’hypothèse n’est ni un souhait ni une conclusion : c’est un <strong>pari intellectuel honnête</strong> que vous acceptez de <strong>falsifier</strong> — c’est-à-dire de rejeter si les chiffres ne suivent pas.
+      </p>
+      <p class="lead">
+        Souvent, le phénomène que visite la Maire (la « gentrification », le « côté usine » des annonces) n’a pas de colonne qui s’appelle <code>gentrification</code>. On utilise alors une ou plusieurs <strong>variables proxy</strong> (ou <strong>variables de substitution</strong>) : des quantités qui <strong>approximent</strong> le concept. Par exemple, le nombre d’annonces par hôte (<code>calculated_host_listings_count</code>) est un proxy possible de la <strong>concentration</strong> de l’offre entre peu d’acteurs ; la disponibilité sur 365 jours (<code>availability_365</code>) peut servir de proxy d’un usage proche de la location courte ; les scores <code>standardization_score</code> et <code>neighborhood_impact_score</code> traduisent les dimensions « image catalogue » et « texte hôtelier » déjà résumées par le pipeline. Le mot <strong>proxy</strong> vient de l’anglais : un mandataire. La variable ne <strong>remplace</strong> pas le concept social — elle en donne une <strong>empreinte mesurable</strong>. Votre devoir d’ingénieur est de le dire clairement dans le rapport : « Nous mesurons X pour parler de Y, avec telle limite. »
+      </p>
+      <p class="lead" style="font-size:0.92rem; color:var(--muted);">
+        <em>Remarque.</em> Si aucune colonne ne permet d’approcher une question du Chapitre&nbsp;1, ce n’est pas un échec : c’est un résultat de cadrage — vous le notez dans les <strong>limites</strong> (« Cette question ne peut pas être traitée avec <code>elysee_tabular</code> seul »). C’est aussi une compétence professionnelle rare : savoir ce qu’on <strong>ne peut pas</strong> conclure.
+      </p>
+
+      <h4>Typer vos variables avant de choisir un graphique</h4>
+      <p class="lead">
+        Les logiciels de visualisation imposent des règles implicites : certains graphiques ont du sens seulement si les types de données sont corrects. Avant de remplir votre tableau, classez chaque colonne utilisée dans l’une des familles suivantes — la nomenclature est standard en statistique appliquée :
+      </p>
+      <ul class="cover-list">
+        <li><strong>Identifiant</strong> : valeur unique par ligne, sert à l’appariement ou au filtrage, <strong>pas</strong> à calculer une moyenne. Chez vous, <code>id</code> est l’identifiant d’annonce. Tracer un histogramme des <code>id</code> n’a aucun sens métier.</li>
+        <li><strong>Variable quantitative</strong> (numérique) : une grandeur mesurée sur une échelle où les écarts ont un sens. Exemples : <code>availability_365</code> (0 à 365), <code>calculated_host_listings_count</code> (entier positif), <code>host_response_rate_num</code> (0 à 100 en pourcentage). On peut parler de moyenne, médiane, écart-type — avec prudence si la distribution est très asymétrique.</li>
+        <li><strong>Variable ordinale</strong> : catégories codées par des entiers, mais avec un <strong>ordre</strong> naturel. Ici, <code>host_response_time_code</code> est ordinal : 0 = plus rapide que 1, etc. L’écart « 3 − 0 » n’est pas forcément comparable à l’écart « 2 − 1 » (échelles de réponse discrètes), mais l’ordre guide l’interprétation.</li>
+        <li><strong>Variable catégorielle nominale</strong> : catégories sans ordre logique entre elles. <code>room_type_code</code> (chambre partagée, privée, logement entier…) est typiquement nominale : le code 2 n’est pas « plus grand » que le code 1 au sens social — c’est un <strong>étiquetage</strong>. Les barres ou les tableaux croisés conviennent mieux que la corrélation de Pearson brute sans réflexion.</li>
+      </ul>
+      <p class="lead">
+        Les scores <code>standardization_score</code> et <code>neighborhood_impact_score</code> prennent trois valeurs (−1, 0, 1) avec une signification métier ordonnée ou trichotomique : ils se comportent souvent comme des <strong>échelles de synthèse</strong> plutôt que comme de simples comptes. Vous les traiterez avec soin (effectifs par modalité, prudence sur les −1) — le Bloc&nbsp;B approfondit ce point.
+      </p>
+
+      <h4>La feuille de route en trois colonnes</h4>
+      <p class="lead">
+        L’outil le plus simple reste le meilleur : un tableau à <strong>trois colonnes</strong> que vous remplissez <strong>avant</strong> la moindre courbe :
+      </p>
+      <ol class="cover-list">
+        <li><strong>Question ou hypothèse</strong> — une phrase qui pourrait être lue à voix haute devant la Maire.</li>
+        <li><strong>Variable(s) retenue(s)</strong> — les noms exacts des colonnes dans <code>elysee_tabular</code>, et en une courte parenthèse le rôle de <strong>proxy</strong> pour quoi.</li>
+        <li><strong>Graphique ou analyse envisagé(e)</strong> — par exemple : histogramme, diagramme en barres, boîte à moustaches (<em>boxplot</em>), nuage de points (<em>scatter plot</em>), matrice de corrélation. Vous n’êtes pas engagé à l’infini : si le premier choix s’avère illisible, vous pourrez l’ajuster — mais vous aurez une <strong>intention</strong> documentée.</li>
+      </ol>
+      <p class="lead">
+        Si une ligne de ce tableau reste incomplète — surtout la colonne « variables » — c’est le signal que la question n’est pas encore <strong>operationalisable</strong> avec ce jeu de données. Parfois il manque une donnée externe (prix au m², bruit mesuré en décibels) : notez-le explicitement ; cela fera partie de vos <strong>limites</strong> et montrera que vous ne confondez pas souhait politique et preuve statistique.
+      </p>
+
+      <h4>Exemples de chaînes « question → proxy » (à adapter)</h4>
+      <p class="lead">
+        Pour vous aider sans imposer une seule bonne réponse, voici des <strong>chaînages possibles</strong> — à valider ou critiquer selon votre lecture du Chapitre&nbsp;1 :
+      </p>
+      <ul class="cover-list">
+        <li><em>« Peu d’acteurs concentrent-ils une grande part de l’offre ? »</em> → proxy : <code>calculated_host_listings_count</code> ; graphiques possibles : histogramme ou courbe de fréquences cumulées pour visualiser la concentration.</li>
+        <li><em>« Les annonces très disponibles toute l’année se distinguent-elles par un profil “catalogue” ou “hôtelier” ? »</em> → proxies : <code>availability_365</code> avec <code>standardization_score</code> ou <code>neighborhood_impact_score</code> ; nuage de points ou boîtes à moustaches par groupe de disponibilité (après découpage en classes).</li>
+        <li><em>« La réactivité type “service client” se marque-t-elle dans les métadonnées ? »</em> → proxies : <code>host_response_rate_num</code>, <code>host_response_time_code</code> ; comparaisons par type de logement (<code>room_type_code</code>).</li>
+      </ul>
+
+      <h4>Piège à éviter : la confirmation biaisée</h4>
+      <p class="lead">
+        En psychologie des sciences, on parle de <strong>biais de confirmation</strong> lorsqu’on ne retient que les résultats qui confortent une idée préconçue. En EDA, l’équivalent est de ne montrer que les graphiques « parlants » dans le sens attendu. La feuille de route du Bloc&nbsp;A, si elle est remplie <strong>avant</strong> les calculs, vous protège : vous avez écrit noir sur blanc ce qui <strong>infirmerait</strong> votre hypothèse (par exemple : « si les boîtes à moustaches se recouvrent entièrement, nous conclurons qu’il n’y a pas de différence nette sur cet échantillon »). C’est cette phrase de <strong>retrait</strong> qui vous rend crédible auprès d’un décideur averti.
       </p>
 
       <p class="lead"><strong>Consignes (à réaliser en binôme ou individuellement)</strong></p>
       <ol class="cover-list">
-        <li>Relire le Chapitre&nbsp;1 et noter <strong>au moins trois questionnements</strong> du brief que vous comptez traiter avec <code>elysee_tabular</code>.</li>
-        <li>Pour chacun, associer <strong>au moins une colonne</strong> du dictionnaire (section&nbsp;2) et préciser si la variable est <strong>identifiant</strong>, <strong>quantitative</strong>, <strong>ordinale</strong> (codes avec ordre) ou <strong>catégorielle nominale</strong> (codes sans ordre naturel).</li>
-        <li>Rédiger en une phrase l’<strong>interprétation possible</strong> si le graphique allait dans un sens fort (et ce qui invaliderait l’hypothèse).</li>
+        <li>Relire le Chapitre&nbsp;1 et noter <strong>au moins trois questionnements</strong> du brief que vous comptez traiter (ou tenter de traiter) avec <code>elysee_tabular</code>.</li>
+        <li>Pour chacun, associer <strong>au moins une colonne</strong> du dictionnaire (section&nbsp;2) et préciser si la variable est <strong>identifiant</strong>, <strong>quantitative</strong>, <strong>ordinale</strong> ou <strong>catégorielle nominale</strong>, en une ligne d’explication si nécessaire.</li>
+        <li>Pour chaque ligne du tableau, rédiger <strong>deux phrases</strong> : (a) ce que vous concluriez si le graphique montrait un lien ou une différence <strong>marqué(e)</strong> ; (b) ce qui <strong>contredirait</strong> ou nuancerait fortement votre hypothèse.</li>
       </ol>
 
       <div class="livrable-bloc">
-        <strong>Livrable du bloc A :</strong> une feuille de route d’analyse d’<strong>une page maximum</strong> (PDF ou markdown dans le dépôt) contenant le tableau « Question → variable(s) → graphique envisagé », plus un court paragraphe sur les <strong>limites</strong> déjà visibles (ex. pas de prix dans cette table, scores −1 à traiter à part, etc.).
+        <strong>Livrable du bloc A :</strong> une feuille de route d’analyse d’<strong>une page maximum</strong> (PDF ou fichier markdown dans le dépôt) contenant le tableau « Question / hypothèse → variable(s) et nature → graphique ou analyse envisagé », les deux phrases d’interprétation / falsification pour chaque ligne, plus un court paragraphe sur les <strong>limites</strong> déjà identifiées (données absentes, scores −1, périmètre Airbnb, etc.).
       </div>
     </section>
 
