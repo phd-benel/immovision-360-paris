@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Chapitre 5 - Exploration et Impact</title>
+  <title>Chapitre 5 - Phase 3 : EDA &amp; exploration</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" />
@@ -13,22 +13,164 @@
   <header class="topbar"><div class="topbar-inner"><div class="brand"><img class="brand-logo" src="../Figures/logo.png" alt="Logo" onerror="this.style.display='none'" /><div class="brand-text">ImmoVision 360</div></div><a class="btn btn-soft" href="../index.html">Sommaire</a></div></header>
   <main class="container">
     <div class="progress-wrap"><div class="progress-text" id="progressText"></div><div class="progress-bar"><div class="progress" id="progressBar"></div></div></div>
+
     <section class="card">
-      <h2>Chapitre 5 - Coming soon !</h2>
-      <p class="lead" style="margin-top:10px;">
-        Cette page est en cours de preparation. Le chapitre complet viendra bientot :
-        exploration des donnees (EDA), indicateurs, et methode d'interpretation pour un diagnostic clair.
+      <h2>Phase 3 : Exploration (EDA) — du Data Warehouse au diagnostic pour la Mairie</h2>
+
+      <p class="lead">
+        <strong>Rappel.</strong> Les phases précédentes vous ont mené du <strong>Data Lake</strong> (fichiers bruts) au <strong>pipeline ETL</strong>, puis au <strong>chargement</strong> dans un entrepôt relationnel. Vous savez désormais isoler le périmètre « Élysée », enrichir les données et structurer un schéma SQL. La Phase 3 ne consiste pas à « refaire » l’ingénierie : elle consiste à <strong>interroger</strong> la donnée déjà consolidée pour répondre aux questions du Chapitre&nbsp;1 — prix, ressenti, image — avec des graphiques et des chiffres vérifiables.
       </p>
-      <div style="margin-top:14px; text-align:center;">
-        <img
-          class="chapter-image"
-          src="../Figures/FigCS.jpg"
-          alt="Coming soon"
-          style="width:200px; max-width:100%; height:auto; border-radius:12px;"
-          onerror="this.onerror=null;this.style.display='none';"
-        />
-      </div>
+
+      <p class="lead">
+        Pour démarrer l’<strong>analyse exploratoire (EDA)</strong> sur une base propre et homogène (mêmes types, mêmes contraintes pour toute la classe), nous mettons à votre disposition un <strong>jeu tabulaire nettoyé</strong> et ses scripts d’import PostgreSQL. Votre première mission dans ce chapitre est de <strong>recréer localement ce petit Data Warehouse de référence</strong>, puis de vous approprier le <strong>dictionnaire des variables</strong> : sans cette lecture métier, aucun graphique n’aura de sens pour la Maire.
+      </p>
+
+      <img
+        src="../Figures/Fig9.png"
+        class="chapter-image"
+        style="width:100%; max-width:720px; height:auto; display:block; margin:12px auto 0;"
+        alt="Du brut aux conclusions : schéma de la démarche d’analyse"
+        onerror="this.onerror=null;this.style.display='none';"
+      />
     </section>
+
+    <section class="card">
+      <h3>1. Télécharger le dossier <code>DataWarehouse</code> et importer les données dans PostgreSQL</h3>
+
+      <p class="lead">
+        Téléchargez l’archive <strong>DataWarehouse.zip</strong> (dossier complet : CSV tabulaire nettoyé, script SQL d’import, fichier d’aide pour la ligne de commande). Décompressez-la à un emplacement fixe sur votre machine (ex.&nbsp;: <code>C:\projets\ImmoVision\DataWarehouse</code> ou équivalent).
+      </p>
+
+      <p style="margin-top:12px;">
+        <a class="btn btn-primary" href="../DataWarehouse.zip" download>Télécharger DataWarehouse.zip</a>
+      </p>
+
+      <p class="lead" style="margin-top:14px;">
+        <strong>Prérequis.</strong> PostgreSQL installé, service démarré, et utilitaire <code>psql</code> accessible dans le terminal (variable d’environnement <code>PATH</code>). Il doit exister une base nommée <code>immovision</code> (créez-la une fois si besoin) et un utilisateur autorisé — en pratique le script d’exemple utilise <code>-U postgres</code>, comme dans le fichier fourni.
+      </p>
+
+      <details style="margin-top:10px;">
+        <summary style="cursor:pointer; font-weight:600;">Première installation : créer la base <code>immovision</code></summary>
+        <p class="lead" style="margin-top:10px;">
+          Sous <code>psql</code> en administrateur (souvent utilisateur <code>postgres</code>) :
+        </p>
+        <pre><code>CREATE DATABASE immovision;</code></pre>
+        <p class="lead">Quittez puis reconnectez-vous sur <code>immovision</code> pour lancer l’import ci-dessous.</p>
+      </details>
+
+      <p class="lead" style="margin-top:14px;">
+        Ouvrez une invite de commandes (<strong>cmd</strong> ou PowerShell), placez-vous dans la racine du dossier décompressé <code>DataWarehouse</code>, puis exécutez <strong>exactement</strong> les deux lignes prévues dans <code>sql\postgres\CMD.txt</code> (chemins relatifs identiques sous Windows) :
+      </p>
+
+      <pre><code>cd sql/postgres
+psql -U postgres -d immovision -f import_elysee_tabular.sql</code></pre>
+
+      <p class="lead">
+        Ce script crée la table <code>elysee_tabular</code> et charge le fichier CSV <code>postgres/elysee_tabular.csv</code>. En cas d’erreur d’authentification, configurez le mot de passe PostgreSQL (variable <code>PGPASSWORD</code> sous Windows, ou fichier <code>pg_hba.conf</code> / compte dédié) selon votre installation locale — le support du cours ne peut pas deviner votre politique de sécurité.
+      </p>
+
+      <p class="lead">
+        Vous pouvez vérifier rapidement que l’import a réussi :
+      </p>
+      <pre><code>psql -U postgres -d immovision -c "SELECT COUNT(*) FROM elysee_tabular;"</code></pre>
+    </section>
+
+    <section class="card">
+      <h3>2. Comprendre le Data Warehouse « clean » : dictionnaire des colonnes</h3>
+
+      <p class="lead">
+        La table <code>elysee_tabular</code> est volontairement <strong>compacte</strong> : chaque ligne est une annonce du périmètre concerné, avec des champs déjà encodés ou numérisés pour l’analyse (et non plus le catalogue brut des 70+ colonnes d’Airbnb). Avant tout scatter plot ou jointplot, lisez attentivement la signification de <strong>chaque</strong> variable — notamment les codes entiers, qui ne sont pas toujours des « notes » arbitraires mais des <strong>mappings</strong> fixes issus du pipeline.
+      </p>
+
+      <details style="margin-top:12px;">
+        <summary style="cursor:pointer; font-weight:600;">Déplier : description détaillée des colonnes de <code>elysee_tabular</code></summary>
+
+        <div style="margin-top:12px;" class="lead">
+          <p><strong><code>id</code></strong><br />
+          Pas une catégorie : identifiant numérique de l’annonce (ex.&nbsp;2871271). Aucun «&nbsp;1 = …&nbsp;» ici.</p>
+
+          <p><strong><code>calculated_host_listings_count</code></strong><br />
+          Nombre entier (ex.&nbsp;1, 25, 184) = nombre d’annonces du même hôte. Plus la valeur est grande, plus l’hôte a d’annonces sur la plateforme.</p>
+
+          <p><strong><code>availability_365</code></strong><br />
+          Nombre entier de 0 à 365 = jours de disponibilité déclarés sur l’année.<br />
+          Ex.&nbsp;: 0 → pas ouverte à la réservation sur la période considérée ; 365 → disponible toute l’année (selon la définition Airbnb).</p>
+
+          <p><strong><code>host_response_rate_num</code></strong><br />
+          Nombre décimal entre 0 et 100 (pas un code de catégorie) : part des messages auxquels l’hôte répond, comme un pourcentage.<br />
+          Ex.&nbsp;: 100.0 → 100&nbsp;% ; 53.0 → 53&nbsp;% ; vide → pas d’info.</p>
+
+          <p><strong><code>room_type_code</code></strong> (mapping fixe)</p>
+          <table style="width:100%; border-collapse:collapse; margin:8px 0; font-size:0.95rem;">
+            <thead>
+              <tr style="border-bottom:1px solid var(--border);">
+                <th style="text-align:left; padding:6px 8px;">Code</th>
+                <th style="text-align:left; padding:6px 8px;">Signifie (catégorie d’origine Airbnb)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td style="padding:6px 8px;">0</td><td style="padding:6px 8px;">→ Shared room (chambre partagée)</td></tr>
+              <tr><td style="padding:6px 8px;">1</td><td style="padding:6px 8px;">→ Private room (chambre privée)</td></tr>
+              <tr><td style="padding:6px 8px;">2</td><td style="padding:6px 8px;">→ Entire home/apt (logement entier)</td></tr>
+              <tr><td style="padding:6px 8px;">3</td><td style="padding:6px 8px;">→ Hotel room (chambre type hôtel)</td></tr>
+              <tr><td style="padding:6px 8px;">−1</td><td style="padding:6px 8px;">→ type inconnu ou valeur non reconnue</td></tr>
+            </tbody>
+          </table>
+
+          <p><strong><code>host_response_time_code</code></strong> (mapping fixe, ordinal : plus petit = plus rapide)</p>
+          <table style="width:100%; border-collapse:collapse; margin:8px 0; font-size:0.95rem;">
+            <thead>
+              <tr style="border-bottom:1px solid var(--border);">
+                <th style="text-align:left; padding:6px 8px;">Code</th>
+                <th style="text-align:left; padding:6px 8px;">Signifie (catégorie d’origine Airbnb)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td style="padding:6px 8px;">0</td><td style="padding:6px 8px;">→ within an hour (dans l’heure)</td></tr>
+              <tr><td style="padding:6px 8px;">1</td><td style="padding:6px 8px;">→ within a few hours (quelques heures)</td></tr>
+              <tr><td style="padding:6px 8px;">2</td><td style="padding:6px 8px;">→ within a day (dans la journée)</td></tr>
+              <tr><td style="padding:6px 8px;">3</td><td style="padding:6px 8px;">→ a few days or more (plusieurs jours)</td></tr>
+              <tr><td style="padding:6px 8px;">−1</td><td style="padding:6px 8px;">→ délai inconnu ou non reconnu</td></tr>
+            </tbody>
+          </table>
+
+          <p><strong><code>standardization_score</code></strong> (3 valeurs = 3 catégories résumées en chiffre)</p>
+          <table style="width:100%; border-collapse:collapse; margin:8px 0; font-size:0.95rem;">
+            <thead>
+              <tr style="border-bottom:1px solid var(--border);">
+                <th style="text-align:left; padding:6px 8px;">Score</th>
+                <th style="text-align:left; padding:6px 8px;">Signifie (logique pipeline image)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td style="padding:6px 8px;">1</td><td style="padding:6px 8px;">→ « Appartement industrialisé » (style très standardisé / catalogue)</td></tr>
+              <tr><td style="padding:6px 8px;">0</td><td style="padding:6px 8px;">→ « Appartement personnel » (plus vécu, moins catalogue)</td></tr>
+              <tr><td style="padding:6px 8px;">−1</td><td style="padding:6px 8px;">→ « Autre » (pas classable, pas d’image, erreur, etc.)</td></tr>
+            </tbody>
+          </table>
+
+          <p><strong><code>neighborhood_impact_score</code></strong> (3 valeurs = 3 catégories résumées en chiffre)</p>
+          <table style="width:100%; border-collapse:collapse; margin:8px 0; font-size:0.95rem;">
+            <thead>
+              <tr style="border-bottom:1px solid var(--border);">
+                <th style="text-align:left; padding:6px 8px;">Score</th>
+                <th style="text-align:left; padding:6px 8px;">Signifie (logique pipeline texte)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td style="padding:6px 8px;">1</td><td style="padding:6px 8px;">→ « Hôtélisé » (processus pro, peu de lien humain, etc.)</td></tr>
+              <tr><td style="padding:6px 8px;">0</td><td style="padding:6px 8px;">→ « Voisinage naturel » (échanges, vie de quartier, etc.)</td></tr>
+              <tr><td style="padding:6px 8px;">−1</td><td style="padding:6px 8px;">→ « Autre » (ambigu, texte absent, erreur, etc.)</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </details>
+
+      <p class="lead" style="margin-top:14px;">
+        Les sections suivantes de ce chapitre (à compléter dans la même veine pédagogique) vous guideront vers les requêtes, visualisations et tests d’hypothèses liés au brief de la Maire — en vous appuyant sur cette table comme <strong>source unique de vérité</strong> pour la Phase&nbsp;3.
+      </p>
+    </section>
+
     <nav class="book-nav">
       <a class="btn btn-soft" href="04-etl.html">Chapitre precedent</a>
       <a class="btn btn-primary" href="06-conclusion.html">Chapitre suivant</a>

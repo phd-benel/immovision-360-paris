@@ -1,5 +1,5 @@
 -- Import : données tabulaires Élysée + scores (mock) → PostgreSQL
--- \copy lit un fichier local ; le chemin ../../data/... part du répertoire courant.
+-- \copy lit un fichier local ; le chemin ../../postgres/... part du répertoire courant (dossier sql/postgres).
 -- Lancer psql depuis ce dossier (sql/postgres), par ex. :
 --   cd sql/postgres
 --   psql -U postgres -d immovision -f import_elysee_tabular.sql
@@ -23,6 +23,6 @@ CREATE TABLE elysee_tabular (
     CONSTRAINT chk_neighborhood_impact_score CHECK (neighborhood_impact_score IN (-1, 0, 1))
 );
 
-\copy elysee_tabular FROM '../../data/processed/postgres/elysee_tabular.csv' WITH (FORMAT csv, HEADER true, ENCODING 'UTF8', NULL '')
+\copy elysee_tabular FROM '../../postgres/elysee_tabular.csv' WITH (FORMAT csv, HEADER true, ENCODING 'UTF8', NULL '')
 
 COMMIT;
