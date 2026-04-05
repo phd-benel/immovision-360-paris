@@ -323,7 +323,7 @@ psql -U postgres -d immovision -f import_elysee_tabular.sql</code></pre>
 
       <h4>Même DataFrame, même chaîne de travail</h4>
       <p class="lead">
-        Vous poursuivez en <strong>Python</strong> sur le <strong>même DataFrame</strong> que dans le Bloc&nbsp;B — idéalement dans le <strong>même notebook</strong> <code>EDA.ipynb</code> (nouvelles sections « Croisements » / « Bivarié ») ou dans un second fichier du type <code>EDA_bivaries.ipynb</code> si vous séparez le contenu. Si vous rechargez depuis PostgreSQL, réappliquez la <strong>même règle</strong> de remplissage des vides (−1) pour rester <strong>cohérent</strong> avec vos descriptions univariées.
+        Vous poursuivez en <strong>Python</strong> sur le <strong>même DataFrame</strong> que dans le Bloc&nbsp;B.
       </p>
 
       <h4>Que cherche-t-on concrètement ?</h4>
@@ -331,13 +331,63 @@ psql -U postgres -d immovision -f import_elysee_tabular.sql</code></pre>
         Pour chaque couple (ou petit groupe) de variables prévu dans la feuille de route, la question est : « Sur notre échantillon, est-ce que les valeurs <strong>tendent à évoluer ensemble</strong>, ou est-ce que certains <strong>groupes</strong> (type de logement, modalité de score) ont des comportements <strong>nettement différents</strong> ? » Ce n’est pas une preuve de <strong>cause</strong> — l’Airbnb ne dit pas pourquoi le phénomène existe — mais un <strong>matériau descriptif</strong> honnête pour alimenter le rapport à la Mairie, à condition de le formuler sans excès.
       </p>
 
-      <h4>Corrélations : Pearson, Spearman, et prudence</h4>
+      <h4>Corrélations : Pearson, Spearman (cours express pour débutants)</h4>
       <p class="lead">
-        Quand vous résumez un lien entre deux colonnes <strong>numériques</strong> par un coefficient entre −1 et +1, <strong>Pearson</strong> mesure surtout une relation <strong>linéaire</strong> (points alignés le long d’une droite). <strong>Spearman</strong> classe les valeurs et mesure si les <strong>rangs</strong> montent ou descendent ensemble : c’est souvent plus adapté aux <strong>scores ordinaux</strong>, comptes ou formes de nuages irrégulières. En pratique (<code>pandas</code>, <code>scipy</code>), vous pouvez afficher une matrice Spearman sur un sous-ensemble de colonnes ; dans le rapport, ne commentez que <strong>2 à 3 coefficients</strong> utiles à votre histoire.
+        Si vous n’avez <strong>jamais suivi de cours de statistique</strong>, ce paragraphe est fait pour vous. L’idée est simple : lorsque vous avez <strong>deux colonnes numériques</strong> (par ex. disponibilité et nombre d’annonces du même hôte), vous voudrez parfois résumer le lien par <strong>un seul nombre</strong> entre <strong>−1</strong> et <strong>+1</strong>. Ce nombre s’appelle un <strong>coefficient de corrélation</strong> : il ne dit pas « pourquoi » le lien existe, seulement s’il est <strong>compatible</strong> avec une certaine forme géométrique dans le nuage de points. Il existe plusieurs définitions ; les deux plus utiles ici sont <strong>Pearson</strong> et <strong>Spearman</strong>.
       </p>
+
       <p class="lead">
-        <strong>Important</strong> : corrélation n’est pas <strong>causalité</strong>. Deux variables peuvent être liées par un <strong>troisième facteur</strong> absent de la table. Une phrase de prudence de ce type dans votre interprétation est le signe d’un travail professionnel.
+        <strong>Corrélation de Pearson</strong> (souvent notée <strong><em>r</em></strong>) répond à la question : « Les points sont-ils à peu près <strong>alignés sur une droite</strong> ? » Si oui, <em>r</em> est proche de +1 (droite montante) ou de −1 (droite descendante). Si le nuage est un « blob » sans direction claire, <em>r</em> est proche de 0. <strong>Attention</strong> : Pearson est bâti pour une relation <strong>linéaire</strong> — si la vraie forme est une courbe ou un « U », un seul nombre peut être <strong>trompeur</strong> (voir la figure ci-dessous, panneau 3).
       </p>
+
+      <p class="lead">
+        <strong>Corrélation de Spearman</strong> (souvent notée <strong>ρ</strong>, se prononce « rho ») procède en deux temps : on remplace chaque valeur par son <strong>rang</strong> (1<sup>er</sup>, 2<sup>e</sup>, 3<sup>e</sup>… de la plus petite à la plus grande), puis on calcule une corrélation de Pearson sur ces rangs. Intuitivement, Spearman répond plutôt à : « Quand l’une des variables est grande, l’autre a-t-elle tendance à être grande aussi, <strong>sans exiger une droite</strong> ? » C’est souvent pertinent pour des <strong>scores ordinaux</strong> ou des relations <strong>monotones</strong> (toujours croissantes ou toujours décroissantes) même si la courbe n’est pas une ligne droite.
+      </p>
+
+      <p class="lead">
+        Les deux indices varient entre −1 et +1, mais <strong>ne mesurent pas exactement la même chose</strong>. En pratique sur votre DataFrame Pandas, vous pourrez afficher une <strong>matrice</strong> de corrélations avec <code>df.corr(method="pearson")</code> ou <code>df.corr(method="spearman")</code> sur un sous-ensemble de colonnes numériques ; dans le rapport, ne commentez que <strong>quelques coefficients</strong> qui servent votre argument — pas la matrice entière sans fil.
+      </p>
+
+      <figure style="margin:18px 0; text-align:center;">
+        <img
+          src="../Figures/Fig_corr_pearson_spearman.png"
+          alt="Quatre panneaux : nuage linéaire, nuage monotone courbe, relation en U, rappel définitions Pearson et Spearman"
+          class="chapter-image"
+          style="width:100%; max-width:920px; height:auto; border-radius:12px;"
+          loading="lazy"
+        />
+        <figcaption class="lead" style="margin-top:10px; font-size:0.92rem;">
+          <strong>Figure 1 — Données simulées.</strong> Panneaux 1 à 3 : le même résumé par deux nombres (<em>r</em> et ρ) peut conduire à des lectures différentes selon la <strong>forme</strong> du nuage. Panneau 4 : définitions à garder sous les yeux. Fichier généré par <code>scripts/generate_correlation_pedagogy_figures.py</code>.
+        </figcaption>
+      </figure>
+
+      <p class="lead">
+        <strong>Corrélation ne signifie pas causalité.</strong> Deux grandeurs peuvent varier ensemble parce qu’elles dépendent toutes les deux d’une <strong>troisième variable</strong> que vous ne voyez pas dans la table (âge, saison, taille du quartier, etc.). La figure suivante illustre l’exemple classique « pointure vs lecture » : la corrélation est forte, mais le mécanisme direct « la chaussure améliore la lecture » est absurde — c’est l’<strong>âge</strong> qui fait monter les deux en parallèle.
+      </p>
+
+      <figure style="margin:18px 0; text-align:center;">
+        <img
+          src="../Figures/Fig_corr_facteur_commun.png"
+          alt="Nuage pointure versus score de lecture : corrélation forte mais facteur commun âge"
+          class="chapter-image"
+          style="width:100%; max-width:720px; height:auto; border-radius:12px;"
+          loading="lazy"
+        />
+        <figcaption class="lead" style="margin-top:10px; font-size:0.92rem;">
+          <strong>Figure 2 — Facteur commun (données simulées).</strong> Une corrélation élevée n’autorise pas à conclure qu’une variable <em>cause</em> l’autre. Mentionnez toujours cette limite dans votre interprétation pour la Mairie.
+        </figcaption>
+      </figure>
+
+      <details style="margin-top:12px;">
+        <summary style="cursor:pointer; font-weight:600;">Exemple minimal de code (Pandas)</summary>
+        <p class="lead" style="margin-top:10px;">
+          Après avoir sélectionné uniquement les colonnes numériques utiles (ex. sans <code>id</code>) :
+        </p>
+        <pre><code># Matrice Pearson
+df[num_cols].corr(method="pearson")
+# Matrice Spearman (souvent préférable avec des scores et des formes irrégulières)
+df[num_cols].corr(method="spearman")</code></pre>
+      </details>
 
       <h4>Comparaisons par groupes</h4>
       <p class="lead">
