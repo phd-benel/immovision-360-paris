@@ -331,21 +331,37 @@ psql -U postgres -d immovision -f import_elysee_tabular.sql</code></pre>
         Pour chaque couple (ou petit groupe) de variables prévu dans la feuille de route, la question est : « Sur notre échantillon, est-ce que les valeurs <strong>tendent à évoluer ensemble</strong>, ou est-ce que certains <strong>groupes</strong> (type de logement, modalité de score) ont des comportements <strong>nettement différents</strong> ? » Ce n’est pas une preuve de <strong>cause</strong> — l’Airbnb ne dit pas pourquoi le phénomène existe — mais un <strong>matériau descriptif</strong> honnête pour alimenter le rapport à la Mairie, à condition de le formuler sans excès.
       </p>
 
-      <h4>Corrélations : Pearson, Spearman (cours express pour débutants)</h4>
+      <h4>Corrélations : Pearson et Spearman — version débutants</h4>
       <p class="lead">
-        Si vous n’avez <strong>jamais suivi de cours de statistique</strong>, ce paragraphe est fait pour vous. L’idée est simple : lorsque vous avez <strong>deux colonnes numériques</strong> (par ex. disponibilité et nombre d’annonces du même hôte), vous voudrez parfois résumer le lien par <strong>un seul nombre</strong> entre <strong>−1</strong> et <strong>+1</strong>. Ce nombre s’appelle un <strong>coefficient de corrélation</strong> : il ne dit pas « pourquoi » le lien existe, seulement s’il est <strong>compatible</strong> avec une certaine forme géométrique dans le nuage de points. Il existe plusieurs définitions ; les deux plus utiles ici sont <strong>Pearson</strong> et <strong>Spearman</strong>.
+        Avec <strong>deux colonnes numériques</strong>, on peut résumer le lien par <strong>un nombre entre −1 et +1</strong>. Ce n’est pas une « note » au sens scolaire : c’est un <strong>résumé</strong> du nuage de points. <strong>Règle d’or pour débutants</strong> : avant de lire ce nombre, regardez toujours le <strong>graphique</strong> (nuage de points). Le même nombre peut correspondre à des formes très différentes — la figure 1 plus bas l’illustre.
       </p>
 
       <p class="lead">
-        <strong>Corrélation de Pearson</strong> (souvent notée <strong><em>r</em></strong>) répond à la question : « Les points sont-ils à peu près <strong>alignés sur une droite</strong> ? » Si oui, <em>r</em> est proche de +1 (droite montante) ou de −1 (droite descendante). Si le nuage est un « blob » sans direction claire, <em>r</em> est proche de 0. <strong>Attention</strong> : Pearson est bâti pour une relation <strong>linéaire</strong> — si la vraie forme est une courbe ou un « U », un seul nombre peut être <strong>trompeur</strong> (voir la figure ci-dessous, panneau 3).
+        <strong>Pearson</strong> (souvent noté <strong><em>r</em></strong>) répond à une seule question simple : <em>« Si je trace la meilleure droite possible à travers le nuage, les points sont-ils serrés autour de cette droite ? »</em>
+      </p>
+      <ul class="cover-list">
+        <li><strong><em>r</em> proche de +1</strong> : les points suivent une <strong>droite qui monte</strong> (quand X augmente, Y augmente).</li>
+        <li><strong><em>r</em> proche de −1</strong> : les points suivent une <strong>droite qui descend</strong>.</li>
+        <li><strong><em>r</em> proche de 0</strong> : <strong>pas</strong> de droite claire — soit le nuage est flou, soit la vraie forme n’est <strong>pas</strong> une droite (voir ci-dessous).</li>
+      </ul>
+      <p class="lead">
+        <strong>Et si la forme est un « U » (ou une cloche) ?</strong> Là, une <strong>droite</strong> n’est pas le bon résumé : les Y d’abord diminuent puis augmentent (ou l’inverse). Pearson peut alors donner un <strong><em>r</em> proche de zéro</strong> même si le graphique montre une structure très nette. <strong>Conclusion pour vous</strong> : si vous voyez un U, <strong>ne dites pas</strong> « il n’y a pas de lien » seulement parce que <em>r</em> est petit — dites « le lien n’est <strong>pas linéaire</strong> ; il faut décrire la forme (U) ou utiliser autre chose qu’une corrélation linéaire ».
       </p>
 
       <p class="lead">
-        <strong>Corrélation de Spearman</strong> (souvent notée <strong>ρ</strong>, se prononce « rho ») procède en deux temps : on remplace chaque valeur par son <strong>rang</strong> (1<sup>er</sup>, 2<sup>e</sup>, 3<sup>e</sup>… de la plus petite à la plus grande), puis on calcule une corrélation de Pearson sur ces rangs. Intuitivement, Spearman répond plutôt à : « Quand l’une des variables est grande, l’autre a-t-elle tendance à être grande aussi, <strong>sans exiger une droite</strong> ? » C’est souvent pertinent pour des <strong>scores ordinaux</strong> ou des relations <strong>monotones</strong> (toujours croissantes ou toujours décroissantes) même si la courbe n’est pas une ligne droite.
+        <strong>Spearman</strong> (souvent noté <strong>ρ</strong>, « rho ») ne regarde pas les valeurs brutes d’abord : il les remplace par des <strong>rangs</strong> (1<sup>er</sup>, 2<sup>e</sup>, 3<sup>e</sup>… du plus petit au plus grand), puis mesure si les rangs « vont dans le même sens ». En pratique, il répond plutôt à : <em>« Quand X est grand, Y a-t-il tendance à être grand aussi, <strong>sans supposer que ce soit une droite</strong> ? »</em>
+      </p>
+      <ul class="cover-list">
+        <li>Si le nuage suit une <strong>courbe qui monte tout le temps</strong> (même pas droite), Spearman peut être <strong>élevé</strong> alors que Pearson est un peu plus faible — les deux sont « cohérents » avec une relation qui se comprend en regardant le dessin.</li>
+        <li>Si la forme est un <strong>U</strong>, Spearman peut aussi être <strong>faible</strong> : du côté gauche du U, quand X augmente, Y diminue ; du côté droit, quand X augmente, Y augmente — l’ordre global n’est pas « toujours dans le même sens ». Là encore : <strong>le graphique prime</strong> sur le nombre.</li>
+      </ul>
+
+      <p class="quote" style="margin-top:12px;">
+        <strong>Mémo une ligne :</strong> <em>Pearson = « alignement sur une droite ».</em> <em>Spearman = « grands avec grands, petits avec petits » en ordre, sans exiger une droite.</em> <strong>U ou cloche</strong> = méfiance : lisez la forme du nuage avant de conclure à partir de <em>r</em> ou ρ.
       </p>
 
       <p class="lead">
-        Les deux indices varient entre −1 et +1, mais <strong>ne mesurent pas exactement la même chose</strong>. En pratique sur votre DataFrame Pandas, vous pourrez afficher une <strong>matrice</strong> de corrélations avec <code>df.corr(method="pearson")</code> ou <code>df.corr(method="spearman")</code> sur un sous-ensemble de colonnes numériques ; dans le rapport, ne commentez que <strong>quelques coefficients</strong> qui servent votre argument — pas la matrice entière sans fil.
+        En Pandas, <code>df.corr(method="pearson")</code> et <code>df.corr(method="spearman")</code> affichent des <strong>matrices</strong> (toutes les paires de colonnes). Dans votre rapport, ne citez que <strong>2 ou 3 cases</strong> qui servent votre histoire — pas la grille entière sans commentaire.
       </p>
 
       <figure style="margin:18px 0; text-align:center;">
@@ -357,7 +373,7 @@ psql -U postgres -d immovision -f import_elysee_tabular.sql</code></pre>
           loading="lazy"
         />
         <figcaption class="lead" style="margin-top:10px; font-size:0.92rem;">
-          <strong>Figure 1 — Données simulées.</strong> Panneaux 1 à 3 : le même résumé par deux nombres (<em>r</em> et ρ) peut conduire à des lectures différentes selon la <strong>forme</strong> du nuage. Panneau 4 : définitions à garder sous les yeux. Fichier généré par <code>scripts/generate_correlation_pedagogy_figures.py</code>.
+          <strong>Figure 1 — Données simulées.</strong> Panneau 1 : forme <strong>en droite</strong> — Pearson et Spearman sont souvent tous deux élevés. Panneau 2 : courbe qui monte sans être droite — Spearman reste souvent fort. Panneau 3 : forme <strong>en U</strong> — un seul coefficient ne résume pas bien le dessin. Panneau 4 : rappel des définitions. Fichier : <code>scripts/generate_correlation_pedagogy_figures.py</code>.
         </figcaption>
       </figure>
 
@@ -378,16 +394,7 @@ psql -U postgres -d immovision -f import_elysee_tabular.sql</code></pre>
         </figcaption>
       </figure>
 
-      <details style="margin-top:12px;">
-        <summary style="cursor:pointer; font-weight:600;">Exemple minimal de code (Pandas)</summary>
-        <p class="lead" style="margin-top:10px;">
-          Après avoir sélectionné uniquement les colonnes numériques utiles (ex. sans <code>id</code>) :
-        </p>
-        <pre><code># Matrice Pearson
-df[num_cols].corr(method="pearson")
-# Matrice Spearman (souvent préférable avec des scores et des formes irrégulières)
-df[num_cols].corr(method="spearman")</code></pre>
-      </details>
+     
 
       <h4>Comparaisons par groupes</h4>
       <p class="lead">
