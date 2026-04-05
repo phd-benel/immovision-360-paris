@@ -310,58 +310,36 @@ psql -U postgres -d immovision -f import_elysee_tabular.sql</code></pre>
     </section>
 
     <section class="card">
-      <h3>5. Parcours EDA — Bloc C : analyses ciblées (bivariées et multivariées)</h3>
+      <h3>5. Parcours EDA — Bloc C : les relations entre variables (pour répondre au cadrage)</h3>
 
       <p class="lead">
-        Le <strong>Bloc&nbsp;A</strong> vous a donné une <strong>feuille de route</strong> : quelles questions du Chapitre&nbsp;1 vous traitez, avec quelles colonnes et quels graphiques <em>envisagés</em>. Le <strong>Bloc&nbsp;B</strong> vous a fait décrire <strong>chaque variable seule</strong> dans un notebook <code>EDA.ipynb</code>, sur un <strong>DataFrame Pandas</strong> harmonisé (vides remplacés par −1). Le <strong>Bloc&nbsp;C</strong> enchaîne : vous <strong>croisez</strong> les variables pour tester, dans les données, ce que le brief suggère — lien entre « machine à cash » et disponibilité, profil « catalogue / hôtelier », réactivité type service client, etc. — sans dériver vers des corrélations sans fil narratif.
+        Au <strong>Chapitre&nbsp;1</strong>, la Maire a posé des questions ; au <strong>Bloc&nbsp;A</strong>, vous les avez traduites en colonnes et en graphiques possibles. Au <strong>Bloc&nbsp;B</strong>, vous avez décrit <strong>chaque colonne toute seule</strong> (effectifs, forme des distributions). Le <strong>Bloc&nbsp;C</strong>, c’est l’étape où l’on s’intéresse aux <strong>relations</strong> : est-ce que, dans les données « Élysée », deux (ou plusieurs) aspects <strong>vont souvent ensemble</strong> ou se <strong>opposent</strong> ? Par exemple : les annonces très ouvertes à la location toute l’année sont-elles aussi celles des hôtes qui ont beaucoup d’annonces ? Le profil « image catalogue » apparaît-il surtout sur certains types de logement ? Ce sont des questions de <strong>liaison</strong> entre variables — pas encore des preuves de <strong>cause</strong> (pour cela, il faudrait d’autres données et d’autres méthodes), mais déjà des éléments pour le <strong>rapport</strong> et le dialogue avec la Mairie.
       </p>
 
-      <h4>Bivarié : deux variables ; multivarié : plusieurs</h4>
+      <h4>Deux familles de questions très concrètes</h4>
       <p class="lead">
-        Une analyse <strong>bivariée</strong> étudie <strong>deux</strong> colonnes ensemble (ex. <code>availability_365</code> et <code>calculated_host_listings_count</code> : nuage de points ou autre dessin adapté). Une analyse <strong>multivariée</strong>, dans ce cours au sens <strong>simple</strong>, désigne soit <strong>plusieurs croisements</strong> successifs guidés par la feuille de route, soit une <strong>vue synthétique</strong> comme une <strong>matrice de corrélations</strong> entre plusieurs variables numériques. La figure « types de graphiques » du Bloc&nbsp;A vous rappelle quels dessins sont en général lisibles selon les <strong>types</strong> de variables croisées (deux quantitatives, catégorie + quantitative, etc.).
-      </p>
-
-      <h4>Même DataFrame, même chaîne de travail</h4>
-      <p class="lead">
-        Vous poursuivez en <strong>Python</strong> sur le <strong>même DataFrame</strong> que dans le Bloc&nbsp;B.
-      </p>
-
-      <h4>Que cherche-t-on concrètement ?</h4>
-      <p class="lead">
-        Pour chaque couple (ou petit groupe) de variables prévu dans la feuille de route, la question est : « Sur notre échantillon, est-ce que les valeurs <strong>tendent à évoluer ensemble</strong>, ou est-ce que certains <strong>groupes</strong> (type de logement, modalité de score) ont des comportements <strong>nettement différents</strong> ? » Ce n’est pas une preuve de <strong>cause</strong> — l’Airbnb ne dit pas pourquoi le phénomène existe — mais un <strong>matériau descriptif</strong> honnête pour alimenter le rapport à la Mairie, à condition de le formuler sans excès.
-      </p>
-
-      <h4>Corrélations : Pearson et Spearman </h4>
-      <p class="lead">
-        Lorsque l’on croise <strong>deux variables quantitatives</strong>, la pratique usuelle consiste à en extraire un <strong>indicateur scalaire</strong> borné entre <strong>−1</strong> et <strong>+1</strong> : les <strong>corrélations</strong> en sont la forme la plus répandue. Il s’agit moins d’une « note » au sens d’une évaluation subjective que d’une <strong>condensation numérique</strong> de ce que révèle le nuage de points — une manière synthétique de caractériser la <strong>cohérence directionnelle</strong> des observations dans l’échantillon. Or tout résumé unidimensionnel occulte la <strong>morphologie</strong> du lien (alignement rectiligne, courbure, structure en U, etc.). La démarche exploratoire recommande donc de traiter coefficient et graphique comme un <strong>couple indissociable</strong> : le tracé permet de juger si le coefficient a un sens, ou s’il aplati une réalité plus complexe — ce que la <strong>figure&nbsp;1</strong> illustre en juxtaposant plusieurs formes de nuages.
-      </p>
-
-      <p class="lead">
-        <strong>Pearson</strong> (souvent noté <strong><em>r</em></strong>) répond à une seule question simple : <em>« Si je trace la meilleure droite possible à travers le nuage, les points sont-ils serrés autour de cette droite ? »</em>
+        Dans la pratique, vous tomberez presque toujours sur l’un de ces deux cas — la figure « types de graphiques » du Bloc&nbsp;A les rappelle :
       </p>
       <ul class="cover-list">
-        <li><strong><em>r</em> proche de +1</strong> : les points suivent une <strong>droite qui monte</strong> (quand X augmente, Y augmente).</li>
-        <li><strong><em>r</em> proche de −1</strong> : les points suivent une <strong>droite qui descend</strong>.</li>
-        <li><strong><em>r</em> proche de 0</strong> : <strong>pas</strong> de droite claire — soit le nuage est flou, soit la vraie forme n’est <strong>pas</strong> une droite (voir ci-dessous).</li>
+        <li><strong>Deux grandeurs numériques</strong> (ex. <code>availability_365</code> et <code>calculated_host_listings_count</code>) : on trace un <strong>nuage de points</strong>. On lit visuellement si, quand l’une augmente, l’autre a tendance à augmenter (ou à diminuer), ou si le nuage est sans forme claire.</li>
+        <li><strong>Une catégorie et une grandeur numérique</strong> (ex. <code>room_type_code</code> et <code>availability_365</code>) : on compare des <strong>boîtes à moustaches</strong> ou des moyennes par groupe. On regarde si « logement entier » et « chambre privée » ont des disponibilités moyennes très différentes, en gardant à l’esprit le nombre d’annonces dans chaque groupe.</li>
       </ul>
       <p class="lead">
-        <strong>Et si la forme est un « U » (ou une cloche) ?</strong> Là, une <strong>droite</strong> n’est pas le bon résumé : les Y d’abord diminuent puis augmentent (ou l’inverse). Pearson peut alors donner un <strong><em>r</em> proche de zéro</strong> même si le graphique montre une structure très nette. <strong>Conclusion pour vous</strong> : si vous voyez un U, <strong>ne dites pas</strong> « il n’y a pas de lien » seulement parce que <em>r</em> est petit — dites « le lien n’est <strong>pas linéaire</strong> ; il faut décrire la forme (U) ou utiliser autre chose qu’une corrélation linéaire ».
+        Vous continuez dans le <strong>même notebook</strong> <code>EDA.ipynb</code> (nouvelle partie « Croisements ») et le <strong>même DataFrame</strong> que le Bloc&nbsp;B. Vous ne faites que <strong>ajouter des graphiques</strong> et du texte qui répondent à votre feuille de route — pas un nouveau mystère technique.
       </p>
 
+      <h4>Pearson et Spearman : à quoi ça sert, avec un exemple mental</h4>
       <p class="lead">
-        <strong>Spearman</strong> (souvent noté <strong>ρ</strong>, « rho ») ne regarde pas les valeurs brutes d’abord : il les remplace par des <strong>rangs</strong> (1<sup>er</sup>, 2<sup>e</sup>, 3<sup>e</sup>… du plus petit au plus grand), puis mesure si les rangs « vont dans le même sens ». En pratique, il répond plutôt à : <em>« Quand X est grand, Y a-t-il tendance à être grand aussi, <strong>sans supposer que ce soit une droite</strong> ? »</em>
+        Parfois, après avoir tracé le nuage de points, on veut résumer le lien par <strong>un seul nombre entre −1 et +1</strong>. C’est optionnel, mais utile pour comparer rapidement plusieurs paires de colonnes. Il existe deux façons courantes de calculer ce nombre : <strong>Pearson</strong> et <strong>Spearman</strong>. Pensez-y comme deux façons de poser la question « est-ce que ces deux colonnes vont dans le même sens ? » — mais pas exactement avec la même lunette.
       </p>
-      <ul class="cover-list">
-        <li>Si le nuage suit une <strong>courbe qui monte tout le temps</strong> (même pas droite), Spearman peut être <strong>élevé</strong> alors que Pearson est un peu plus faible — les deux sont « cohérents » avec une relation qui se comprend en regardant le dessin.</li>
-        <li>Si la forme est un <strong>U</strong>, Spearman peut aussi être <strong>faible</strong> : du côté gauche du U, quand X augmente, Y diminue ; du côté droit, quand X augmente, Y augmente — l’ordre global n’est pas « toujours dans le même sens ». Là encore : <strong>le graphique prime</strong> sur le nombre.</li>
-      </ul>
-
-      <p class="quote" style="margin-top:12px;">
-        <strong>Mémo une ligne :</strong> <em>Pearson = « alignement sur une droite ».</em> <em>Spearman = « grands avec grands, petits avec petits » en ordre, sans exiger une droite.</em> <strong>U ou cloche</strong> = méfiance : lisez la forme du nuage avant de conclure à partir de <em>r</em> ou ρ.
-      </p>
-
       <p class="lead">
-        En Pandas, <code>df.corr(method="pearson")</code> et <code>df.corr(method="spearman")</code> affichent des <strong>matrices</strong> (toutes les paires de colonnes). Dans votre rapport, ne citez que <strong>2 ou 3 cases</strong> qui servent votre histoire — pas la grille entière sans commentaire.
+        <strong>Pearson</strong> se demande : « Si je trace une <strong>droite</strong> au milieu du nuage, les points sont-ils <strong>proches de cette droite</strong> ? » Imaginez la disponibilité en abscisse et le nombre d’annonces du même hôte en ordonnée : si les points forment un bandeau qui monte tout droit, Pearson sera proche de <strong>+1</strong>. Si le bandeau descend, proche de <strong>−1</strong>. Si c’est une tache sans direction, proche de <strong>0</strong>. Limite importante : si le vrai dessin ressemble à un <strong>U</strong> (d’abord ça baisse, puis ça remonte), une droite ne résume plus le phénomène — Pearson peut être proche de zéro <strong>même si le graphique a une forme très claire</strong>. Dans ce cas, vous ne dites pas « il n’y a rien à voir », vous dites « le lien n’est pas du type droite ; il faut le raconter autrement ».
+      </p>
+      <p class="lead">
+        <strong>Spearman</strong> se demande plutôt : « Quand une valeur est <strong>grande</strong> par rapport aux autres dans sa colonne, l’autre est-elle aussi souvent grande ? » (on parle de <strong>rangs</strong> : 1<sup>er</sup>, 2<sup>e</sup>, 3<sup>e</sup>…). Exemple mental : une courbe qui monte tout le temps mais pas en ligne droite — Spearman peut rester élevé parce que l’ordre « petit X → petit Y, grand X → grand Y » est respecté ; Pearson peut être un peu plus bas parce que ce n’est pas une droite. Si le dessin est en <strong>U</strong>, les « grands » et « petits » ne vont plus toujours dans le même sens selon la zone du nuage — Spearman peut baisser aussi. Là encore : <strong>le dessin du nuage reste le chef d’orchestre</strong> ; le nombre ne fait qu’accompagner.
+      </p>
+      <p class="lead">
+        En résumé pour votre projet : utilisez surtout les <strong>graphiques</strong> pour répondre au cadrage. Si vous ajoutez une matrice de corrélations dans Pandas (<code>df.corr(method="pearson")</code> ou <code>df.corr(method="spearman")</code>), ne commentez que <strong>quelques paires</strong> qui ont un sens pour la Maire — pas toute la grille d’un coup.
       </p>
 
       <figure style="margin:18px 0; text-align:center;">
@@ -373,12 +351,12 @@ psql -U postgres -d immovision -f import_elysee_tabular.sql</code></pre>
           loading="lazy"
         />
         <figcaption class="lead" style="margin-top:10px; font-size:0.92rem;">
-          <strong>Figure 1 — Données simulées.</strong> Panneau 1 : forme <strong>en droite</strong> — Pearson et Spearman sont souvent tous deux élevés. Panneau 2 : courbe qui monte sans être droite — Spearman reste souvent fort. Panneau 3 : forme <strong>en U</strong> — un seul coefficient ne résume pas bien le dessin. Panneau 4 : rappel des définitions. Fichier : <code>scripts/generate_correlation_pedagogy_figures.py</code>.
+          <strong>Figure 1 — Données simulées pour s’entraîner à l’œil.</strong> À gauche : nuage « en bande droite » — Pearson et Spearman sont souvent élevés. Au centre : courbe qui monte — Spearman peut rester fort. À droite : forme en U — un seul nombre ne suffit pas à raconter le dessin. Généré par <code>scripts/generate_correlation_pedagogy_figures.py</code>.
         </figcaption>
       </figure>
 
-      <p class="lead">
-        <strong>Corrélation ne signifie pas causalité.</strong> Deux grandeurs peuvent varier ensemble parce qu’elles dépendent toutes les deux d’une <strong>troisième variable</strong> que vous ne voyez pas dans la table (âge, saison, taille du quartier, etc.). La figure suivante illustre l’exemple classique « pointure vs lecture » : la corrélation est forte, mais le mécanisme direct « la chaussure améliore la lecture » est absurde — c’est l’<strong>âge</strong> qui fait monter les deux en parallèle.
+      <p class="quote" style="margin-top:12px;">
+        <strong>À retenir :</strong> une corrélation (Pearson ou Spearman) <strong>ne prouve pas</strong> que « X cause Y ». Deux colonnes peuvent monter ensemble parce qu’une <strong>troisième chose</strong> (non dans votre tableau) pousse les deux dans le même sens.
       </p>
 
       <figure style="margin:18px 0; text-align:center;">
@@ -390,31 +368,30 @@ psql -U postgres -d immovision -f import_elysee_tabular.sql</code></pre>
           loading="lazy"
         />
         <figcaption class="lead" style="margin-top:10px; font-size:0.92rem;">
-          <strong>Figure 2 — Facteur commun (données simulées).</strong> Une corrélation élevée n’autorise pas à conclure qu’une variable <em>cause</em> l’autre. Mentionnez toujours cette limite dans votre interprétation pour la Mairie.
+          <strong>Figure 2 — Exemple classique (données simulées).</strong> Pointure et « score de lecture » seraient corrélées chez les enfants parce que les deux augmentent avec l’<strong>âge</strong> — pas parce que la chaussure « cause » la lecture. Pour ImmoVision, le parallèle serait : deux indicateurs Airbnb peuvent co-varier sans que l’un soit la cause mécanique de l’autre.
         </figcaption>
       </figure>
 
-     
-
-      <h4>Comparaisons par groupes</h4>
+      <h4>Option (facultative)</h4>
       <p class="lead">
-        Dès qu’une variable est une <strong>catégorie</strong> (ex. <code>room_type_code</code>) ou un <strong>score à modalités</strong>, on compare souvent la <strong>même</strong> variable quantitative selon les groupes (boîtes à moustaches, barres d’agrégats, tableaux croisés). Vérifiez les <strong>effectifs par groupe</strong> : une catégorie avec très peu d’annonces peut produire un graphique trompeur — dites-le en une ligne.
-      </p>
-
-      <h4>Option avancée (facultative)</h4>
-      <p class="lead">
-        Une <strong>ACP</strong> ou un <strong>clustering</strong> peut aider à visualiser des <strong>profils</strong> d’annonces ; ce n’est <strong>pas requis</strong> pour valider le projet. Avec peu de colonnes dans <code>elysee_tabular</code>, les croisements prévus au Bloc&nbsp;A suffisent souvent. Si vous ajoutez une ACP, présentez-la comme une <strong>piste d’exploration</strong>, pas comme le seul résultat décisif.
+        Une <strong>ACP</strong> ou un <strong>clustering</strong> peut aider à visualiser des profils ; ce n’est pas nécessaire pour réussir le Bloc&nbsp;C si vos croisements répondent déjà au cadrage.
       </p>
 
       <p class="lead"><strong>Consignes</strong></p>
       <ol class="cover-list">
-        <li>À partir de la <strong>feuille de route (Bloc&nbsp;A)</strong>, produire dans le notebook <strong>au moins deux visualisations de croisement</strong> alignées sur des questions du brief (ex. multi-annonce vs disponibilité ; scores image / texte vs type de logement ; réactivité hôte vs profil).</li>
-        <li>Pour chaque figure : <strong>titre</strong>, <strong>axes</strong> nommés, mention de l’<strong>effectif</strong> ou du sous-échantillon ; puis <strong>deux courtes phrases</strong> — ce que vous observez, et une <strong>limite</strong> (pas de causalité hâtive, petits effectifs, présence de −1).</li>
-        <li><strong>Option</strong> : matrice de corrélations Spearman sur des colonnes numériques choisies, avec commentaire limité à quelques coefficients pertinents pour le récit.</li>
+        <li>À partir de la <strong>feuille de route (Bloc&nbsp;A)</strong>, produire <strong>au moins deux figures</strong> qui croisent des variables pour répondre à des questions du Chapitre&nbsp;1 (ex. disponibilité vs multi-annonce ; scores image ou texte vs type de logement).</li>
+        <li>Pour chaque figure : <strong>titre</strong>, axes, <strong>effectif</strong> ; puis une phrase « ce que je vois » et une phrase « ce que je ne peux pas affirmer » (cause, petits groupes, −1).</li>
+        <li><strong>Option</strong> : une petite matrice de corrélations (Pearson ou Spearman) sur quelques colonnes numériques, avec 2–3 commentaires ciblés, pas une page de chiffres sans texte.</li>
       </ol>
 
+      <details style="margin-top:10px;">
+        <summary style="cursor:pointer; font-weight:600;">Rappel code Pandas (corrélations)</summary>
+        <pre><code>df[num_cols].corr(method="pearson")
+df[num_cols].corr(method="spearman")</code></pre>
+      </details>
+
       <div class="livrable-bloc">
-        <strong>Livrable du bloc C :</strong> dans le notebook (sections de croisement ou notebook dédié), <strong>au minimum deux figures « cœur du message »</strong> issues de la feuille de route, avec double phrase (observation + prudence) et un <strong>paragraphe de synthèse</strong> reliant les résultats aux questions du Chapitre&nbsp;1 ; optionnellement, la matrice Spearman commentée de façon ciblée.
+        <strong>Livrable du bloc C :</strong> dans le notebook, la section des <strong>croisements</strong> avec au moins <strong>deux figures</strong> reliées au cadrage, chacune commentée (observation + limite), plus un <strong>court paragraphe</strong> qui relie vos résultats aux questions posées au départ ; optionnellement, la matrice de corrélations commentée.
       </div>
     </section>
 
