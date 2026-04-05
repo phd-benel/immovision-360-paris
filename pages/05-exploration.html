@@ -234,20 +234,16 @@ psql -U postgres -d immovision -f import_elysee_tabular.sql</code></pre>
         <li><em>« La réactivité type “service client” se marque-t-elle dans les métadonnées ? »</em> → proxies : <code>host_response_rate_num</code>, <code>host_response_time_code</code> ; comparaisons par type de logement (<code>room_type_code</code>).</li>
       </ul>
 
-      <h4>Piège à éviter : la confirmation biaisée</h4>
-      <p class="lead">
-        En psychologie des sciences, on parle de <strong>biais de confirmation</strong> lorsqu’on ne retient que les résultats qui confortent une idée préconçue. En EDA, l’équivalent est de ne montrer que les graphiques « parlants » dans le sens attendu. La feuille de route du Bloc&nbsp;A, si elle est remplie <strong>avant</strong> les calculs, vous protège : vous avez écrit noir sur blanc ce qui <strong>infirmerait</strong> votre hypothèse (par exemple : « si les boîtes à moustaches se recouvrent entièrement, nous conclurons qu’il n’y a pas de différence nette sur cet échantillon »). C’est cette phrase de <strong>retrait</strong> qui vous rend crédible auprès d’un décideur averti.
-      </p>
 
-      <p class="lead"><strong>Consignes (à réaliser en binôme ou individuellement)</strong></p>
+      <p class="lead"><strong>Consignes (à réaliser individuellement)</strong></p>
       <ol class="cover-list">
-        <li>Relire le Chapitre&nbsp;1 et noter <strong>au moins trois questionnements</strong> du brief que vous comptez traiter (ou tenter de traiter) avec <code>elysee_tabular</code>.</li>
-        <li>Pour chacun, associer <strong>au moins une colonne</strong> du dictionnaire (section&nbsp;2) et préciser si la variable est <strong>identifiant</strong>, <strong>quantitative</strong>, <strong>ordinale</strong> ou <strong>catégorielle nominale</strong>, en une ligne d’explication si nécessaire.</li>
-        <li>Pour chaque ligne du tableau, rédiger <strong>deux phrases</strong> : (a) ce que vous concluriez si le graphique montrait un lien ou une différence <strong>marqué(e)</strong> ; (b) ce qui <strong>contredirait</strong> ou nuancerait fortement votre hypothèse.</li>
+        <li>Relire le Chapitre&nbsp;1 et noter <strong>au moins 5 questionnements (qui découle des 3 questionnements majeures)</strong> que vous comptez traiter (ou tenter de traiter) avec <code>votre table de données SQL</code>.</li>
+        <li>Pour chacun, associer <strong>au moins une colonne</strong> de votre Table SQL et préciser si la variable est <strong>identifiant</strong>, <strong>quantitative</strong>, <strong>ordinale</strong> ou <strong>catégorielle nominale</strong>, en une ligne d’explication si nécessaire.</li>
+        <li>Pour <strong>chaque ligne</strong> du tableau, <strong>définir précisément le graphique envisagé</strong> : type (histogramme, diagramme en barres, boîte à moustaches, nuage de points, etc.), variables en abscisse et en ordonnée (ou tableau croisé / répartition conditionnelle), et tout regroupement ou filtre prévu (par exemple exclusion ou traitement à part des scores −1, découpage de <code>availability_365</code> en classes).</li>
       </ol>
 
       <div class="livrable-bloc">
-        <strong>Livrable du bloc A :</strong> une feuille de route d’analyse d’<strong>une page maximum</strong> (PDF ou fichier markdown dans le dépôt) contenant le tableau « Question / hypothèse → variable(s) et nature → graphique ou analyse envisagé », les deux phrases d’interprétation / falsification pour chaque ligne, plus un court paragraphe sur les <strong>limites</strong> déjà identifiées (données absentes, scores −1, périmètre Airbnb, etc.).
+        <strong>Livrable du bloc A :</strong> une feuille de route d’analyse d’<strong>une page maximum</strong> (PDF ou fichier markdown dans le dépôt) contenant le tableau « Question / hypothèse → variable(s) et nature → <strong>définition du graphique envisagé</strong> (type, axes, filtres / regroupements) », plus un court paragraphe sur les <strong>limites</strong> déjà identifiées (données absentes, scores −1, périmètre Airbnb, etc.).
       </div>
     </section>
 
