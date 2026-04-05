@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Chapitre 6 - Conclusion et Evaluation</title>
+  <title>Chapitre 6 - Synthèse et rapport final</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" />
@@ -13,28 +13,122 @@
   <header class="topbar"><div class="topbar-inner"><div class="brand"><img class="brand-logo" src="../Figures/logo.png" alt="Logo" onerror="this.style.display='none'" /><div class="brand-text">ImmoVision 360</div></div><a class="btn btn-soft" href="../index.html">Sommaire</a></div></header>
   <main class="container">
     <div class="progress-wrap"><div class="progress-text" id="progressText"></div><div class="progress-bar"><div class="progress" id="progressBar"></div></div></div>
+
     <section class="card">
-      <h2>Chapitre 6 - Coming soon !</h2>
+      <h2>Synthèse, rapport pour la Mairie et structure du projet GitHub</h2>
       <p class="lead" style="margin-top:10px;">
-        Cette page est en cours de preparation. Le contenu complet viendra bientot :
-        synthese, livrables, et rapport clair au Maire.
+        Ce dernier chapitre fixe l’objectif final du fil rouge : <strong>faire la synthèse de votre feuille de route</strong> (collecte, ETL, qualité, exploration, croisements), <strong>résumer et structurer</strong> vos travaux dans un <strong>rapport PDF</strong>, et <strong>présenter le lien vers votre dépôt GitHub</strong> conforme à l’architecture attendue. Vous ne nommez plus les « blocs » du notebook : vous livrez un <strong>ensemble cohérent</strong> lisible par un décideur.
       </p>
-      <div style="margin-top:14px; text-align:center;">
-        <img
-          class="chapter-image"
-          src="../Figures/FigCS.jpg"
-          alt="Coming soon"
-          style="width:200px; max-width:100%; height:auto; border-radius:12px;"
-          onerror="this.onerror=null;this.style.display='none';"
-        />
+    </section>
+
+    <section class="card">
+      <h3>1. But du livrable</h3>
+      <p class="lead">
+        Le but est double : <strong>(1)</strong> montrer que vous avez suivi la méthode (données, traitements, analyses) de bout en bout ; <strong>(2)</strong> répondre en langage <strong>simple et direct</strong> aux questions du Chapitre&nbsp;1 — ce que la Mairie peut retenir, ce qu’elle ne peut pas conclure, et <strong>pourquoi</strong> (limites explicites).
+      </p>
+      <p class="lead">
+        Le <strong>rapport PDF</strong> (voir ci-dessous) est le document principal pour la Mairie. Le dépôt GitHub atteste la <strong>traçabilité</strong> du code et de la documentation technique (<code>README</code>, scripts, notebook d’EDA).
+      </p>
+    </section>
+
+    <section class="card">
+      <h3>2. Rapport PDF pour la Mairie</h3>
+      <p class="lead">
+        Vous rédigez un <strong>rapport PDF</strong> de <strong>3 à 10 pages maximum</strong> (hors annexes optionnelles si le module le permet), à déposer dans le dépôt et à remettre selon le lien / la procédure indiqués par l’enseignant (souvent <strong>URL du dépôt GitHub</strong> + fichier PDF identifiable).
+      </p>
+      <p class="lead"><strong>Contenu attendu (adaptable à votre feuille de route)</strong></p>
+      <ul class="cover-list">
+        <li><strong>Rappel du problème</strong> : ce que la Mairie veut comprendre (périmètre, objectifs).</li>
+        <li><strong>Données et chaîne de traitement</strong> en quelques pages : d’où viennent les données, filtrage métier, enrichissements utiles, chargement — sans noyer le lecteur dans le code.</li>
+        <li><strong>Résultats</strong> : les <strong>graphiques et tableaux les plus importants</strong> issus de votre EDA et de vos croisements (ceux qui portent vraiment la réponse aux questions du cadrage).</li>
+        <li><strong>Limites de l’étude</strong> : une section visible — périmètre Airbnb, biais possibles, valeurs manquantes ou codes <code>−1</code>, variables absentes (ex. prix si non joint), généralisation au quartier, ce qu’une corrélation ne prouve pas, etc.</li>
+        <li><strong>Conclusion</strong> : quelques formulations claires (ce qui est établi, ce qui reste incertain, pistes éventuelles).</li>
+      </ul>
+      <p class="lead">
+        Rédigez pour un <strong>lecteur non spécialiste</strong> : phrases courtes, définitions légères si nécessaire, figures légendées. Évitez le jargon inutile ; lorsqu’un terme technique est indispensable, donnez une brève explication.
+      </p>
+      <div class="livrable-bloc">
+        <strong>Livrable documentaire :</strong> fichier PDF nommé de façon explicite, par exemple <code>rapport_final_Mairie.pdf</code> (ou équivalent), placé à la racine du dépôt ou dans un dossier <code>docs/</code> clairement indiqué dans le <code>README.md</code>.
       </div>
     </section>
+
+    <section class="card">
+      <h3>3. Architecture cible du dépôt <code>ImmoVision360_Project</code></h3>
+      <p class="lead">
+        Votre dépôt GitHub doit refléter une organisation lisible : données séparées du code, scripts numérotés, documentation par étape. La structure ci-dessous est la <strong>cible</strong> ; vous y intégrez notamment le <strong>notebook d’EDA</strong> et le <strong>rapport PDF</strong> pour la Mairie.
+      </p>
+      <pre style="overflow-x:auto; font-size:0.85rem; line-height:1.45; padding:14px; background:var(--surface-2, #f8f9fa); border-radius:12px; border:1px solid var(--border);"><code>ImmoVision360_Project/
+├── data/
+│   ├── raw/                          ← Zone « Bronze » (inchangée côté référentiel : non versionnée)
+│   │   ├── tabular/
+│   │   │   ├── listings.csv
+│   │   │   └── reviews.csv
+│   │   ├── images/                   ← [ID].jpg
+│   │   └── texts/                    ← [ID].txt
+│   │
+│   └── processed/                    ← Zone « Silver »
+│       ├── filtered_elysee.csv       ← Généré par le script d’extraction (ex. 04_extract.py)
+│       └── transformed_elysee.csv    ← Généré par le script de transformation (ex. 05_transform.py)
+│
+├── scripts/
+│   ├── 01_ingestion_images.py
+│   ├── 02_ingestion_textes.py
+│   ├── 03_sanity_check.py
+│   ├── 04_extract.py               ← Filtrage &amp; sélection métier (Pandas)
+│   ├── 05_transform.py             ← IA : Image2Feature &amp; Text2Feature
+│   └── 06_load.py                  ← Injection PostgreSQL (SQLAlchemy)
+│
+├── EDA.ipynb                        ← Analyse exploratoire (qualité, descriptif, croisements)
+├── rapport_final_Mairie.pdf         ← Rapport PDF 3–10 pages max. pour la Mairie
+│
+├── .env                             ← Config (DB_USER, DB_PASSWORD) — ne pas pousser
+├── .gitignore                       ← Exclut data/, .env, environnements Python
+├── README_DATALAKE.md
+├── README_EXTRACT.md
+├── README_TRANSFORM.md
+├── README_DATAPROFILING.md
+├── README_LOAD.md
+└── README.md                        ← Documentation du pipeline + lien vers le PDF et l’EDA</code></pre>
+      <p class="lead">
+        Le fichier <code>EDA.ipynb</code> materialise le travail du Chapitre&nbsp;5 (notebook unique ou nom équivalent clairement référencé dans le <code>README.md</code>). Le fichier <code>rapport_final_Mairie.pdf</code> est le document de synthèse pour le décideur ; son emplacement exact (racine ou <code>docs/</code>) doit être indiqué dans le README principal.
+      </p>
+    </section>
+
+    <section class="card">
+      <h3>4. Ce que vous poussez sur GitHub — et ce que vous ne poussez pas</h3>
+      <p class="lead">
+        Le dépôt sert à partager le <strong>code</strong>, les <strong>README</strong>, le <strong>notebook EDA</strong> et le <strong>rapport PDF</strong>. En revanche, pour limiter la taille, les risques et les fuites de secrets :
+      </p>
+      <ul class="cover-list">
+        <li><strong>Ne pas versionner</strong> l’environnement Python local : pas de dossier type <code>venv/</code>, <code>.venv/</code>, <code>env/</code> ni gros caches — listez plutôt les dépendances dans <code>requirements.txt</code> si vous en créez un.</li>
+        <li><strong>Ne pas pousser le contenu lourd de <code>data/</code></strong> : en pratique, exclure via <code>.gitignore</code> les <strong>CSV</strong>, <strong>images</strong>, <strong>fichiers texte</strong> bruts ou intermédiaires (ainsi que tout ce qui relève des jeux de données du projet). Le README décrit où placer ces dossiers en local ; seuls des <strong>échantillons anonymisés</strong> ou des fichiers factices peuvent être ajoutés si le module l’autorise explicitement.</li>
+        <li><strong>Ne jamais pousser <code>.env</code></strong> ni mots de passe : le <code>.gitignore</code> doit l’exclure ; fournir un <code>.env.example</code> sans secrets si besoin.</li>
+      </ul>
+      <p class="lead">
+        Le <strong>PDF du rapport</strong> et le <strong>notebook EDA</strong> sont en revanche des livrables attendus dans le dépôt (sauf consigne contraire de l’enseignant pour des contraintes de plateforme).
+      </p>
+    </section>
+
+    <section class="card">
+      <h3>5. Check-list avant remise</h3>
+      <ol class="cover-list">
+        <li>Le PDF répond bien aux <strong>questions du Maire</strong> et cite les <strong>principales figures</strong> (pas seulement du texte).</li>
+        <li>Les <strong>limites</strong> sont visibles (section dédiée ou encadrés).</li>
+        <li>Le <code>README.md</code> donne la <strong>vue d’ensemble du pipeline</strong>, le lien ou le chemin vers le rapport PDF, et la mention du notebook <code>EDA.ipynb</code>.</li>
+        <li><code>.gitignore</code> protège <code>data/</code>, <code>.env</code> et environnements Python.</li>
+        <li>L’URL du dépôt est prête à être <strong>copiée dans le formulaire / le rendu</strong> prévu par le cours.</li>
+      </ol>
+      <p class="quote" style="margin-top:16px;">
+        Fin du parcours ImmoVision&nbsp;360 : de la donnée brute à un <strong>message clair</strong> pour la Mairie, avec la même <strong>honnêteté scientifique</strong> sur ce que les données permettent — et ne permettent pas — d’affirmer.
+      </p>
+    </section>
+
     <nav class="book-nav">
-      <a class="btn btn-soft" href="05-exploration.html">Chapitre precedent</a>
-      <a class="btn btn-primary" href="../index.html">Fin du parcours</a>
+      <a class="btn btn-soft" href="05-exploration.html">Chapitre précédent</a>
+      <a class="btn btn-primary" href="../index.html">Sommaire</a>
     </nav>
     <footer>
-      Chapitre 6/6 - Parcours termine
+      Chapitre 6/6 — Parcours terminé
       <span aria-hidden="true"> • </span>
       By
       <a
