@@ -310,29 +310,54 @@ psql -U postgres -d immovision -f import_elysee_tabular.sql</code></pre>
     </section>
 
     <section class="card">
-      <h3>5. Parcours EDA — Bloc C : analyses ciblées (bivariées / multivariées)</h3>
+      <h3>5. Parcours EDA — Bloc C : analyses ciblées (bivariées et multivariées)</h3>
 
       <p class="lead">
-        <strong>Idée clé.</strong> C’est ici que vous reliez les données au <strong>brief</strong>. Le croisement de deux variables (bivarié) ou plusieurs (multivarié — par ex. matrice de corrélation ou graphiques conditionnels) permet de dire : « Dans notre échantillon, telle tendance apparaît », avec des réserves sur la causalité.
+        Le <strong>Bloc&nbsp;A</strong> vous a donné une <strong>feuille de route</strong> : quelles questions du Chapitre&nbsp;1 vous traitez, avec quelles colonnes et quels graphiques <em>envisagés</em>. Le <strong>Bloc&nbsp;B</strong> vous a fait décrire <strong>chaque variable seule</strong> dans un notebook <code>EDA.ipynb</code>, sur un <strong>DataFrame Pandas</strong> harmonisé (vides remplacés par −1). Le <strong>Bloc&nbsp;C</strong> enchaîne : vous <strong>croisez</strong> les variables pour tester, dans les données, ce que le brief suggère — lien entre « machine à cash » et disponibilité, profil « catalogue / hôtelier », réactivité type service client, etc. — sans dériver vers des corrélations sans fil narratif.
       </p>
 
+      <h4>Bivarié : deux variables ; multivarié : plusieurs</h4>
       <p class="lead">
-        <strong>Méthode.</strong> Pour des relations <strong>monotones</strong> sans hypothèse de ligne droite, la corrélation de <strong>Spearman</strong> est souvent plus honnête que Pearson sur des scores ordinaux ou des distributions asymétriques. Pour les variables catégorielles, privilégiez les <strong>comparaisons par groupe</strong> (boxplot de <code>availability_365</code> selon <code>room_type_code</code>) ou des tableaux croisés. Évitez d’empiler douze corrélations sans fil narratif : gardez <strong>deux à quatre figures au cœur du message</strong>.
+        Une analyse <strong>bivariée</strong> étudie <strong>deux</strong> colonnes ensemble (ex. <code>availability_365</code> et <code>calculated_host_listings_count</code> : nuage de points ou autre dessin adapté). Une analyse <strong>multivariée</strong>, dans ce cours au sens <strong>simple</strong>, désigne soit <strong>plusieurs croisements</strong> successifs guidés par la feuille de route, soit une <strong>vue synthétique</strong> comme une <strong>matrice de corrélations</strong> entre plusieurs variables numériques. La figure « types de graphiques » du Bloc&nbsp;A vous rappelle quels dessins sont en général lisibles selon les <strong>types</strong> de variables croisées (deux quantitatives, catégorie + quantitative, etc.).
       </p>
 
+      <h4>Même DataFrame, même chaîne de travail</h4>
       <p class="lead">
-        <strong>PCA / clusters (optionnel).</strong> Avec peu de colonnes dans <code>elysee_tabular</code>, une <strong>ACP</strong> ou un <strong>partitionnement</strong> (k-means) peut servir d’<strong>exploration</strong> pour repérer des profils d’annonces ; présentez-le comme une piste visuelle, pas comme la seule preuve métier. Si vous ne maîtrisez pas encore ces outils, concentrez-vous sur les croisements explicites liés au tableau du bloc&nbsp;A.
+        Vous poursuivez en <strong>Python</strong> sur le <strong>même DataFrame</strong> que dans le Bloc&nbsp;B — idéalement dans le <strong>même notebook</strong> <code>EDA.ipynb</code> (nouvelles sections « Croisements » / « Bivarié ») ou dans un second fichier du type <code>EDA_bivaries.ipynb</code> si vous séparez le contenu. Si vous rechargez depuis PostgreSQL, réappliquez la <strong>même règle</strong> de remplissage des vides (−1) pour rester <strong>cohérent</strong> avec vos descriptions univariées.
+      </p>
+
+      <h4>Que cherche-t-on concrètement ?</h4>
+      <p class="lead">
+        Pour chaque couple (ou petit groupe) de variables prévu dans la feuille de route, la question est : « Sur notre échantillon, est-ce que les valeurs <strong>tendent à évoluer ensemble</strong>, ou est-ce que certains <strong>groupes</strong> (type de logement, modalité de score) ont des comportements <strong>nettement différents</strong> ? » Ce n’est pas une preuve de <strong>cause</strong> — l’Airbnb ne dit pas pourquoi le phénomène existe — mais un <strong>matériau descriptif</strong> honnête pour alimenter le rapport à la Mairie, à condition de le formuler sans excès.
+      </p>
+
+      <h4>Corrélations : Pearson, Spearman, et prudence</h4>
+      <p class="lead">
+        Quand vous résumez un lien entre deux colonnes <strong>numériques</strong> par un coefficient entre −1 et +1, <strong>Pearson</strong> mesure surtout une relation <strong>linéaire</strong> (points alignés le long d’une droite). <strong>Spearman</strong> classe les valeurs et mesure si les <strong>rangs</strong> montent ou descendent ensemble : c’est souvent plus adapté aux <strong>scores ordinaux</strong>, comptes ou formes de nuages irrégulières. En pratique (<code>pandas</code>, <code>scipy</code>), vous pouvez afficher une matrice Spearman sur un sous-ensemble de colonnes ; dans le rapport, ne commentez que <strong>2 à 3 coefficients</strong> utiles à votre histoire.
+      </p>
+      <p class="lead">
+        <strong>Important</strong> : corrélation n’est pas <strong>causalité</strong>. Deux variables peuvent être liées par un <strong>troisième facteur</strong> absent de la table. Une phrase de prudence de ce type dans votre interprétation est le signe d’un travail professionnel.
+      </p>
+
+      <h4>Comparaisons par groupes</h4>
+      <p class="lead">
+        Dès qu’une variable est une <strong>catégorie</strong> (ex. <code>room_type_code</code>) ou un <strong>score à modalités</strong>, on compare souvent la <strong>même</strong> variable quantitative selon les groupes (boîtes à moustaches, barres d’agrégats, tableaux croisés). Vérifiez les <strong>effectifs par groupe</strong> : une catégorie avec très peu d’annonces peut produire un graphique trompeur — dites-le en une ligne.
+      </p>
+
+      <h4>Option avancée (facultative)</h4>
+      <p class="lead">
+        Une <strong>ACP</strong> ou un <strong>clustering</strong> peut aider à visualiser des <strong>profils</strong> d’annonces ; ce n’est <strong>pas requis</strong> pour valider le projet. Avec peu de colonnes dans <code>elysee_tabular</code>, les croisements prévus au Bloc&nbsp;A suffisent souvent. Si vous ajoutez une ACP, présentez-la comme une <strong>piste d’exploration</strong>, pas comme le seul résultat décisif.
       </p>
 
       <p class="lead"><strong>Consignes</strong></p>
       <ol class="cover-list">
-        <li>À partir de votre feuille de route (bloc&nbsp;A), produire <strong>au moins deux visualisations</strong> qui répondent directement à une question du brief (ex. lien entre multi-annonce et disponibilité ; croisement scores image/texte et type de logement).</li>
-        <li>Pour chaque figure : une phrase de <strong>résultat</strong> et une phrase de <strong>prudence</strong> (biais, corrélation non causale, effectifs faibles dans une catégorie).</li>
-        <li>Option : une matrice de corrélation (Spearman) sur les variables numériques pertinentes, avec commentaire ciblé sur 2–3 coefficients seulement.</li>
+        <li>À partir de la <strong>feuille de route (Bloc&nbsp;A)</strong>, produire dans le notebook <strong>au moins deux visualisations de croisement</strong> alignées sur des questions du brief (ex. multi-annonce vs disponibilité ; scores image / texte vs type de logement ; réactivité hôte vs profil).</li>
+        <li>Pour chaque figure : <strong>titre</strong>, <strong>axes</strong> nommés, mention de l’<strong>effectif</strong> ou du sous-échantillon ; puis <strong>deux courtes phrases</strong> — ce que vous observez, et une <strong>limite</strong> (pas de causalité hâtive, petits effectifs, présence de −1).</li>
+        <li><strong>Option</strong> : matrice de corrélations Spearman sur des colonnes numériques choisies, avec commentaire limité à quelques coefficients pertinents pour le récit.</li>
       </ol>
 
       <div class="livrable-bloc">
-        <strong>Livrable du bloc C :</strong> <strong>deux figures « cœur du message »</strong> (haute résolution ou export notebook), chacune accompagnée d’une <strong>courte légende interprétative</strong> (format compréhensible par la Maire : pas de jargon statistique non défini) + un paragraphe de synthèse reliant ces résultats aux hypothèses du Chapitre&nbsp;1.
+        <strong>Livrable du bloc C :</strong> dans le notebook (sections de croisement ou notebook dédié), <strong>au minimum deux figures « cœur du message »</strong> issues de la feuille de route, avec double phrase (observation + prudence) et un <strong>paragraphe de synthèse</strong> reliant les résultats aux questions du Chapitre&nbsp;1 ; optionnellement, la matrice Spearman commentée de façon ciblée.
       </div>
     </section>
 
