@@ -122,6 +122,11 @@ h2{margin:.1rem 0 .8rem;font-size:clamp(1.2rem,2.2vw,1.7rem)}
   background:#f4f7ff;border:1px solid #dce6ff;border-left:4px solid var(--primary);
   border-radius:10px;padding:12px 14px;color:#334155;
 }
+.livrable-bloc{
+  background:#f0fdf4;border:1px solid #bbf7d0;border-left:4px solid #16a34a;
+  border-radius:10px;padding:12px 14px;color:#14532d;margin:14px 0;font-size:.95rem;line-height:1.65;
+}
+.livrable-bloc strong{color:#166534;}
 .book-nav{
   display:flex;justify-content:space-between;gap:10px;margin-top:16px
 }

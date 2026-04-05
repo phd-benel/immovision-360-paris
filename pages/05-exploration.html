@@ -167,12 +167,128 @@ psql -U postgres -d immovision -f import_elysee_tabular.sql</code></pre>
       </details>
 
       <p class="lead" style="margin-top:14px;">
-        Les sections suivantes de ce chapitre (à compléter dans la même veine pédagogique) vous guideront vers les requêtes, visualisations et tests d’hypothèses liés au brief de la Maire — en vous appuyant sur cette table comme <strong>source unique de vérité</strong> pour la Phase&nbsp;3.
+        Une fois la table importée et le dictionnaire assimilé, vous enchaînez avec le <strong>parcours d’analyse</strong> ci-dessous. Il est découpé en <strong>quatre blocs</strong>, calqués sur une <strong>séance type de trois heures</strong> : chaque bloc mélange <em>cours</em> (méthodes, repères professionnels) et <em>travail attendu</em> (consignes, livrable court). Vous pouvez aussi étaler ces blocs sur plusieurs séances selon votre emploi du temps.
+      </p>
+    </section>
+
+    <section class="card">
+      <h3>3. Parcours EDA — Bloc A : cadrage métier et feuille de route</h3>
+
+      <p class="lead">
+        <strong>Idée clé.</strong> En entreprise, on ne lance pas matplotlib au hasard : on part des <strong>questions métier</strong>, puis on choisit les <strong>variables</strong> et les <strong>graphiques</strong> qui peuvent y répondre — ou montrer que la donnée ne permet pas encore de trancher. L’EDA exploratoire sert à <strong>tester des hypothèses</strong> et à <strong>quantifier</strong>, pas à « prouver ce qu’on veut ».
+      </p>
+
+      <p class="lead">
+        <strong>Méthode.</strong> Reprenez le Chapitre&nbsp;1 (brief de la Mairie). Pour chaque grande question (lien prix / nuisance / standing marketing, concentration des offres, profil « pro » vs résidentiel, etc.), listez les colonnes de <code>elysee_tabular</code> qui en sont des <strong>proxies</strong> (approximation mesurable). Exemples de lecture : <code>calculated_host_listings_count</code> pour la concentration côté hôte ; <code>availability_365</code> pour l’usage type location ; <code>host_response_rate_num</code> et <code>host_response_time_code</code> pour un indicateur de réactivité « gestion professionnelle » ; <code>standardization_score</code> et <code>neighborhood_impact_score</code> pour les dimensions image et texte déjà agrégées.
+      </p>
+
+      <p class="lead">
+        <strong>Astuce.</strong> Construisez un tableau à trois colonnes : <em>Question ou hypothèse</em> → <em>Variable(s) utilisée(s)</em> → <em>Type de graphique envisagé</em> (histogramme, barres, boxplot, scatter, heatmap de corrélation…). Si une case reste vide, c’est un signal : soit la question n’est pas encore operationalisable, soit il manque une donnée (à dire explicitement dans le rapport).
+      </p>
+
+      <p class="lead"><strong>Consignes (à réaliser en binôme ou individuellement)</strong></p>
+      <ol class="cover-list">
+        <li>Relire le Chapitre&nbsp;1 et noter <strong>au moins trois questionnements</strong> du brief que vous comptez traiter avec <code>elysee_tabular</code>.</li>
+        <li>Pour chacun, associer <strong>au moins une colonne</strong> du dictionnaire (section&nbsp;2) et préciser si la variable est <strong>identifiant</strong>, <strong>quantitative</strong>, <strong>ordinale</strong> (codes avec ordre) ou <strong>catégorielle nominale</strong> (codes sans ordre naturel).</li>
+        <li>Rédiger en une phrase l’<strong>interprétation possible</strong> si le graphique allait dans un sens fort (et ce qui invaliderait l’hypothèse).</li>
+      </ol>
+
+      <div class="livrable-bloc">
+        <strong>Livrable du bloc A :</strong> une feuille de route d’analyse d’<strong>une page maximum</strong> (PDF ou markdown dans le dépôt) contenant le tableau « Question → variable(s) → graphique envisagé », plus un court paragraphe sur les <strong>limites</strong> déjà visibles (ex. pas de prix dans cette table, scores −1 à traiter à part, etc.).
+      </div>
+    </section>
+
+    <section class="card">
+      <h3>4. Parcours EDA — Bloc B : qualité des données et descriptif univarié</h3>
+
+      <p class="lead">
+        <strong>Idée clé.</strong> Avant de croiser les variables, le professionnel vérifie la <strong>qualité</strong> : effectifs, doublons, valeurs manquantes, part des codes « inconnu » (−1 ou NULL). Un graphique sur données sales est une <strong>fausse preuve</strong> pour le décideur. L’<strong>analyse univariée</strong> décrit chaque variable seule : distribution, médiane, quartiles pour les numériques ; fréquences pour les codes.
+      </p>
+
+      <p class="lead">
+        <strong>Méthode.</strong> Depuis PostgreSQL ou après export vers Python/Pandas, calculez au minimum : nombre de lignes ; unicité de <code>id</code> ; pourcentage de NULL sur <code>host_response_rate_num</code> ; répartition des <code>standardization_score</code> et <code>neighborhood_impact_score</code> (y compris −1). Pour les variables continues ou semi-continues (<code>availability_365</code>, <code>calculated_host_listings_count</code>), regardez les <strong>quantiles</strong> et l’existence de valeurs très extrêmes. Pour les codes, utilisez des <strong>diagrammes en barres</strong> avec les libellés métier (pas seulement 0, 1, 2…).
+      </p>
+
+      <p class="lead">
+        <strong>Outliers.</strong> Un point « aberrant » statistiquement peut être un <strong>cas légitime</strong> (ex. hôte avec très nombreuses annonces). En politique de la donnée urbaine, on ne supprime pas toujours : on <strong>signale</strong>, on <strong>segmente</strong> (graphique avec / sans extrêmes), ou on garde et on commente. Documentez toute exclusion.
+      </p>
+
+      <p class="lead">
+        <strong>Astuces.</strong> SQL permet des profils rapides (<code>COUNT</code>, <code>MIN</code>/<code>MAX</code>, <code>GROUP BY</code> sur les codes). En Python, <code>describe()</code>, <code>value_counts()</code>, et des histogrammes avec bornes explicites évitent les échelles trompeuses. Toujours indiquer <strong>n</strong> (effectif) sur le graphique ou dans la légende.
+      </p>
+
+      <p class="lead"><strong>Consignes</strong></p>
+      <ol class="cover-list">
+        <li>Produire un <strong>mini rapport d’audit</strong> : effectif total, contrôle des doublons sur <code>id</code>, taux de manquants et taux de −1 pour les scores et codes pertinents.</li>
+        <li>Réaliser <strong>au moins deux graphiques descriptifs univariés</strong> (ex. histogramme de <code>availability_365</code> ; barres des effectifs par <code>room_type_code</code> avec légende textuelle des catégories).</li>
+        <li>Pour chaque figure : <strong>titre</strong>, <strong>axes</strong>, <strong>unité ou échelle</strong>, <strong>légende</strong> lisible par un non-statisticien.</li>
+      </ol>
+
+      <div class="livrable-bloc">
+        <strong>Livrable du bloc B :</strong> <strong>deux à trois paragraphes</strong> rédigés sous forme d’« état des données » (qualité, manquants, codes −1) <strong>+ deux graphiques descriptifs minimum</strong> avec légendes claires et brève interprétation (une phrase chacun).
+      </div>
+    </section>
+
+    <section class="card">
+      <h3>5. Parcours EDA — Bloc C : analyses ciblées (bivariées / multivariées)</h3>
+
+      <p class="lead">
+        <strong>Idée clé.</strong> C’est ici que vous reliez les données au <strong>brief</strong>. Le croisement de deux variables (bivarié) ou plusieurs (multivarié — par ex. matrice de corrélation ou graphiques conditionnels) permet de dire : « Dans notre échantillon, telle tendance apparaît », avec des réserves sur la causalité.
+      </p>
+
+      <p class="lead">
+        <strong>Méthode.</strong> Pour des relations <strong>monotones</strong> sans hypothèse de ligne droite, la corrélation de <strong>Spearman</strong> est souvent plus honnête que Pearson sur des scores ordinaux ou des distributions asymétriques. Pour les variables catégorielles, privilégiez les <strong>comparaisons par groupe</strong> (boxplot de <code>availability_365</code> selon <code>room_type_code</code>) ou des tableaux croisés. Évitez d’empiler douze corrélations sans fil narratif : gardez <strong>deux à quatre figures au cœur du message</strong>.
+      </p>
+
+      <p class="lead">
+        <strong>PCA / clusters (optionnel).</strong> Avec peu de colonnes dans <code>elysee_tabular</code>, une <strong>ACP</strong> ou un <strong>partitionnement</strong> (k-means) peut servir d’<strong>exploration</strong> pour repérer des profils d’annonces ; présentez-le comme une piste visuelle, pas comme la seule preuve métier. Si vous ne maîtrisez pas encore ces outils, concentrez-vous sur les croisements explicites liés au tableau du bloc&nbsp;A.
+      </p>
+
+      <p class="lead"><strong>Consignes</strong></p>
+      <ol class="cover-list">
+        <li>À partir de votre feuille de route (bloc&nbsp;A), produire <strong>au moins deux visualisations</strong> qui répondent directement à une question du brief (ex. lien entre multi-annonce et disponibilité ; croisement scores image/texte et type de logement).</li>
+        <li>Pour chaque figure : une phrase de <strong>résultat</strong> et une phrase de <strong>prudence</strong> (biais, corrélation non causale, effectifs faibles dans une catégorie).</li>
+        <li>Option : une matrice de corrélation (Spearman) sur les variables numériques pertinentes, avec commentaire ciblé sur 2–3 coefficients seulement.</li>
+      </ol>
+
+      <div class="livrable-bloc">
+        <strong>Livrable du bloc C :</strong> <strong>deux figures « cœur du message »</strong> (haute résolution ou export notebook), chacune accompagnée d’une <strong>courte légende interprétative</strong> (format compréhensible par la Maire : pas de jargon statistique non défini) + un paragraphe de synthèse reliant ces résultats aux hypothèses du Chapitre&nbsp;1.
+      </div>
+    </section>
+
+    <section class="card">
+      <h3>6. Parcours EDA — Bloc D : synthèse, limites, rapport et dashboard</h3>
+
+      <p class="lead">
+        <strong>Idée clé.</strong> L’ingénieur termine par la <strong>traçabilité</strong> et la <strong>communication</strong>. La Mairie ne retiendra pas votre code : elle retiendra <strong>ce que vous osez conclure</strong> et <strong>ce que vous refusez d’affirmer</strong> faute de preuve. Les <strong>limites</strong> (périmètre Airbnb, quotas IA, scores −1, absence de certaines variables comme le prix dans cette table si vous ne les avez pas jointes) font partie de la qualité du travail.
+      </p>
+
+      <p class="lead">
+        <strong>Rapport.</strong> Structure type : rappel du problème ; données et méthode (en deux pages maximum pour l’EDA) ; résultats illustrés ; discussion (limites, pistes) ; conclusion en trois puces actionnables ou non-actionnables. Longueur cible <strong>deux à cinq pages</strong> hors annexes, comme annoncé dans la méthodologie globale du module.
+      </p>
+
+      <p class="lead">
+        <strong>Dashboard (Gradio ou équivalent).</strong> Un tableau de bord interactif sert de <strong>vitrine</strong> des analyses déjà validées : quelques filtres (ex. par type de logement), trois ou quatre graphiques reprise du rapport — pas une avalanche de widgets non commentés. Le feature engineering à ce stade est <strong>minimal</strong> : agrégations, ratios ou scores dérivés déjà justifiés dans les blocs précédents.
+      </p>
+
+      <p class="lead"><strong>Consignes</strong></p>
+      <ol class="cover-list">
+        <li>Rédiger le <strong>plan détaillé</strong> du rapport (titres de sections + figures prévues).</li>
+        <li>Rédiger une page « <strong>Limites et données manquantes</strong> » (biais, généralisation au quartier, interprétation des −1).</li>
+        <li>Si vous utilisez Gradio : lister les <strong>3 à 4 vues</strong> que vous exposerez et le lien avec les figures du rapport (mêmes indicateurs, pas de nouveautés non expliquées).</li>
+      </ol>
+
+      <div class="livrable-bloc">
+        <strong>Livrable du bloc D :</strong> le <strong>plan structuré du rapport</strong> (une page) + le texte des <strong>limites</strong> (une page maximum) ; si applicable, <strong>maquette ou capture</strong> du dashboard avec la liste des vues ; préparation du <strong>document final</strong> à rendre selon les consignes du module (dépôt Git, PDF, etc.).
+      </div>
+
+      <p class="quote" style="margin-top:16px;">
+        En résumé : le Chapitre&nbsp;5 vous fait passer du <strong>fichier SQL propre</strong> à un <strong>récit vérifiable</strong> — qualité, descriptif, croisements argumentés, puis synthèse honnête pour le décideur.
       </p>
     </section>
 
     <nav class="book-nav">
-      <a class="btn btn-soft" href="04-etl.html">Chapitre precedent</a>
+      <a class="btn btn-soft" href="04-etl.html">Chapitre précédent</a>
       <a class="btn btn-primary" href="06-conclusion.html">Chapitre suivant</a>
     </nav>
     <footer>
