@@ -365,14 +365,33 @@ psql -U postgres -d immovision -f import_elysee_tabular.sql</code></pre>
           loading="lazy"
         />
         <figcaption class="lead" style="margin-top:10px; font-size:0.92rem;">
-          <strong>Figure — Exemple pédagogique (données simulées).</strong> Deux grandeurs semblent liées sur le graphique sans que l’une cause directement l’autre : les deux augmentent avec un <strong>facteur commun</strong> (ici l’âge, non affiché sur les axes). Pour ImmoVision, deux indicateurs du fichier peuvent co-varier parce qu’ils réagissent ensemble à un <strong>contexte</strong> que les colonnes ne capturent qu’en partie. Généré par <code>scripts/generate_correlation_pedagogy_figures.py</code>.
+          <strong>Figure — Exemple pédagogique (données simulées).</strong> Deux grandeurs semblent liées sur le graphique sans que l’une cause directement l’autre : les deux augmentent avec un <strong>facteur commun</strong> (ici l’âge, non affiché sur les axes). Pour ImmoVision, deux indicateurs du fichier peuvent co-varier parce qu’ils réagissent ensemble à un <strong>contexte</strong> que les colonnes ne capturent qu’en partie.
         </figcaption>
       </figure>
 
       <h4>Option (facultative)</h4>
       <p class="lead">
-        Une <strong>ACP</strong> ou un <strong>clustering</strong> peut aider à visualiser des profils ; ce n’est pas requis si chaque ligne de croisement de la feuille de route est déjà traduite en graphique au Bloc&nbsp;C.
+        Une fois que vous avez <strong>traité chaque ligne</strong> pertinente de la feuille de route et <strong>analysé</strong> les croisements (figures + interprétation + prudence), vous pouvez, si le temps le permet, <strong>explorer d’autres pistes</strong> au-delà du strict minimum du Bloc&nbsp;C. Ce n’est <strong>pas requis</strong> pour valider le bloc : le cœur du livrable reste la <strong>traduction systématique</strong> de votre plan en graphiques commentés.
       </p>
+      <p class="lead">
+        Par exemple, une <strong>analyse en composantes principales (ACP, PCA en anglais)</strong> part de plusieurs <strong>variables numériques</strong> à la fois (par exemple <strong>sept indicateurs</strong> : on parle souvent d’un espace en « 7D », une dimension par variable). L’ACP construit de nouveaux axes — en pratique un <strong>plan en 2D</strong> (<strong>PC1</strong>, <strong>PC2</strong>) — qui résument une grande partie de la variabilité. On peut alors <strong>regarder</strong> si les points se séparent en <strong>deux nuages</strong> (par exemple un profil « très standardisé / industrialisé » et un autre « plus personnel / habituel ») ou s’ils forment <strong>un seul amas</strong> sans frontière nette. L’ACP <strong>n’impose pas</strong> une vérité métier : elle aide à <strong>visualiser</strong> des profils à recouper avec vos colonnes et le contexte du projet.
+      </p>
+      <p class="lead">
+        Un <strong>clustering</strong> (k-means, etc.) peut aller dans le même sens en proposant des groupes, avec les mêmes précautions d’interprétation.
+      </p>
+
+      <figure style="margin:18px 0; text-align:center;">
+        <img
+          src="../Figures/Fig_pca_interpretation.png"
+          alt="Plan ACP : à gauche deux nuages séparés, à droite un nuage homogène sans deux clusters nets"
+          class="chapter-image"
+          style="width:100%; max-width:900px; height:auto; border-radius:12px;"
+          loading="lazy"
+        />
+        <figcaption class="lead" style="margin-top:10px; font-size:0.92rem;">
+          <strong>Figure — Interpréter un plan PCA (données simulées, 7 variables → 2 axes).</strong> <strong>Gauche :</strong> deux groupes (ex. « profil 1 » et « profil 2 ») restent séparés après projection — on peut envisager deux comportements distincts sur les combinaisons de variables. <strong>Droite :</strong> un seul nuage — pas de <strong>deux clusters</strong> évidents sur ce plan ; la variabilité ne se lit pas comme deux blocs. En projet, reliez toujours ces vues à des <strong>variables interprétables</strong> (type de logement, scores, etc.) avant de nommer les groupes.
+        </figcaption>
+      </figure>
 
       <p class="lead"><strong>Consignes</strong></p>
       <ol class="cover-list">
