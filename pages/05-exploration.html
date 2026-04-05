@@ -208,6 +208,11 @@ psql -U postgres -d immovision -f import_elysee_tabular.sql</code></pre>
         <li><strong>Variable catégorielle nominale</strong> : catégories sans ordre logique entre elles. <code>room_type_code</code> (chambre partagée, privée, logement entier…) est typiquement nominale : le code 2 n’est pas « plus grand » que le code 1 au sens social — c’est un <strong>étiquetage</strong>. Les barres ou les tableaux croisés conviennent mieux que la corrélation de Pearson brute sans réflexion.</li>
       </ul>
 
+      
+
+      <p class="lead">
+        Les scores <code>standardization_score</code> et <code>neighborhood_impact_score</code> prennent trois valeurs (−1, 0, 1) avec une signification métier ordonnée ou trichotomique : ils se comportent souvent comme des <strong>échelles de synthèse</strong> plutôt que comme de simples comptes. Vous les traiterez avec soin (effectifs par modalité, prudence sur les −1) — le Bloc&nbsp;B approfondit ce point.
+      </p>
       <figure style="margin:18px 0; text-align:center;">
         <img
           src="../Figures/Fig_chart_types_guide.png"
@@ -216,14 +221,8 @@ psql -U postgres -d immovision -f import_elysee_tabular.sql</code></pre>
           style="width:100%; max-width:920px; height:auto; border-radius:12px;"
           loading="lazy"
         />
-        <figcaption class="lead" style="margin-top:10px; font-size:0.92rem;">
-          <strong>Figure (données fictives).</strong> Chaque sous-graphique rappelle la <strong>nature des variables</strong> et le <strong>nom du graphique</strong> usuel. Vous pouvez régénérer cette image avec le script <code>scripts/generate_chart_types_guide.py</code> à la racine du dépôt.
-        </figcaption>
+        
       </figure>
-
-      <p class="lead">
-        Les scores <code>standardization_score</code> et <code>neighborhood_impact_score</code> prennent trois valeurs (−1, 0, 1) avec une signification métier ordonnée ou trichotomique : ils se comportent souvent comme des <strong>échelles de synthèse</strong> plutôt que comme de simples comptes. Vous les traiterez avec soin (effectifs par modalité, prudence sur les −1) — le Bloc&nbsp;B approfondit ce point.
-      </p>
 
       <h4>La feuille de route en trois colonnes</h4>
       <p class="lead">
