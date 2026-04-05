@@ -331,9 +331,9 @@ psql -U postgres -d immovision -f import_elysee_tabular.sql</code></pre>
         Pour chaque couple (ou petit groupe) de variables prévu dans la feuille de route, la question est : « Sur notre échantillon, est-ce que les valeurs <strong>tendent à évoluer ensemble</strong>, ou est-ce que certains <strong>groupes</strong> (type de logement, modalité de score) ont des comportements <strong>nettement différents</strong> ? » Ce n’est pas une preuve de <strong>cause</strong> — l’Airbnb ne dit pas pourquoi le phénomène existe — mais un <strong>matériau descriptif</strong> honnête pour alimenter le rapport à la Mairie, à condition de le formuler sans excès.
       </p>
 
-      <h4>Corrélations : Pearson et Spearman — version débutants</h4>
+      <h4>Corrélations : Pearson et Spearman </h4>
       <p class="lead">
-        Avec <strong>deux colonnes numériques</strong>, on peut résumer le lien par <strong>un nombre entre −1 et +1</strong>. Ce n’est pas une « note » au sens scolaire : c’est un <strong>résumé</strong> du nuage de points. <strong>Règle d’or pour débutants</strong> : avant de lire ce nombre, regardez toujours le <strong>graphique</strong> (nuage de points). Le même nombre peut correspondre à des formes très différentes — la figure 1 plus bas l’illustre.
+        Lorsque l’on croise <strong>deux variables quantitatives</strong>, la pratique usuelle consiste à en extraire un <strong>indicateur scalaire</strong> borné entre <strong>−1</strong> et <strong>+1</strong> : les <strong>corrélations</strong> en sont la forme la plus répandue. Il s’agit moins d’une « note » au sens d’une évaluation subjective que d’une <strong>condensation numérique</strong> de ce que révèle le nuage de points — une manière synthétique de caractériser la <strong>cohérence directionnelle</strong> des observations dans l’échantillon. Or tout résumé unidimensionnel occulte la <strong>morphologie</strong> du lien (alignement rectiligne, courbure, structure en U, etc.). La démarche exploratoire recommande donc de traiter coefficient et graphique comme un <strong>couple indissociable</strong> : le tracé permet de juger si le coefficient a un sens, ou s’il aplati une réalité plus complexe — ce que la <strong>figure&nbsp;1</strong> illustre en juxtaposant plusieurs formes de nuages.
       </p>
 
       <p class="lead">
