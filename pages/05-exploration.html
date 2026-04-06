@@ -386,16 +386,16 @@ psql -U postgres -d immovision -f import_elysee_tabular.sql</code></pre>
               loading="lazy"
             />
             <figcaption class="lead" style="margin-top:10px; font-size:0.92rem;">
-              <strong>Figure — Interpréter un plan PCA (données simulées, 7 variables hors identifiant → 2 axes).</strong> <strong>Gauche :</strong> deux groupes (ex. « profil 1 » et « profil 2 ») restent séparés après projection — on peut envisager deux comportements distincts sur les combinaisons de variables. <strong>Droite :</strong> un seul nuage — pas de <strong>deux clusters</strong> évidents sur ce plan ; la variabilité ne se lit pas comme deux blocs. En projet, reliez toujours ces vues à des <strong>variables interprétables</strong> (type de logement, scores, etc.) avant de nommer les groupes.
+              <strong>Figure — Interpréter un plan PCA (données simulées, 7 variables hors identifiant → 2 axes).</strong> <strong>Gauche :</strong> deux groupes (ex. « profil 1 » et « profil 2 ») restent séparés après projection — on peut envisager deux comportements distincts sur les combinaisons de variables. <strong>Droite :</strong> un seul nuage — pas de <strong>deux clusters</strong> évidents sur ce plan ; la variabilité ne se lit pas comme deux blocs.
             </figcaption>
           </figure>
 
-          <h4 style="margin-top:18px; font-size:1.05rem;">Perspectives supplémentaires (optionnel)</h4>
+          <h4 style="margin-top:18px; font-size:1.05rem;">Perspectives supplémentaires</h4>
           <p class="lead">
             Au-delà de l’ACP, vous pouvez <strong>cartographier les liaisons linéaires</strong> entre variables numériques avec une <strong>matrice de corrélations de Pearson</strong> (et une heatmap pour la lecture rapide des paires fortes ou faibles). Cela complète les nuages deux à deux : vous voyez d’un coup l’ensemble des <strong>scores</strong> entre couples de colonnes, tout en gardant en tête les limites déjà vues dans ce chapitre (liaison ≠ causalité, sensibilité aux valeurs aberrantes — la corrélation de <strong>Spearman</strong> peut servir de variante « rang » si besoin).
           </p>
           <p class="lead" style="margin-top:12px;">
-            Il existe aussi des <strong>méthodes statistiques</strong> qui complètent les graphiques pour <strong>étudier des relations entre deux variables</strong> — ou entre une <strong>variable numérique</strong> et des <strong>groupes</strong> définis par une catégorie. On parle souvent d’analyses <strong>bivariées</strong> lorsqu’on cherche à quantifier une association, une différence de moyennes ou une dépendance entre modalités ; chaque procédure impose ses <strong>conditions</strong> (effectifs, types de variables, hypothèses du test).
+            Il existe aussi des <strong>méthodes statistiques</strong> qui complètent les graphiques pour <strong>étudier des relations entre deux variables</strong> — ou entre une <strong>variable numérique</strong> et des <strong>groupes</strong> définis par une catégorie. On parle souvent d’analyses <strong>bivariées</strong> lorsqu’on cherche à quantifier une association, une différence de moyennes ou une dépendance entre modalités ; chaque procédure impose ses <strong>conditions</strong> (effectifs, types de variables, hypothèses du test). Comme par exemple :
           </p>
           <p class="lead">
             <strong>Test <em>t</em> de Student / ANOVA</strong> : utiles pour examiner si une <strong>différence de moyennes</strong> entre <strong>deux groupes</strong> (test <em>t</em>) ou <strong>plusieurs groupes</strong> (ANOVA) est plutôt compatible avec le <strong>hasard</strong> ou suggère un <strong>écart réel</strong> — sous conditions (effectifs, hypothèses du test, variables adaptées). Exemple d’idée : comparer une mesure numérique selon deux modalités d’une variable catégorielle.
