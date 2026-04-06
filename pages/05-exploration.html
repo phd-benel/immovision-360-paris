@@ -394,6 +394,18 @@ psql -U postgres -d immovision -f import_elysee_tabular.sql</code></pre>
           <p class="lead">
             Au-delà de l’ACP, vous pouvez <strong>cartographier les liaisons linéaires</strong> entre variables numériques avec une <strong>matrice de corrélations de Pearson</strong> (et une heatmap pour la lecture rapide des paires fortes ou faibles). Cela complète les nuages deux à deux : vous voyez d’un coup l’ensemble des <strong>scores</strong> entre couples de colonnes, tout en gardant en tête les limites déjà vues dans ce chapitre (liaison ≠ causalité, sensibilité aux valeurs aberrantes — la corrélation de <strong>Spearman</strong> peut servir de variante « rang » si besoin).
           </p>
+          <p class="lead" style="margin-top:12px;">
+            Il existe aussi des <strong>méthodes statistiques</strong> qui complètent les graphiques pour <strong>étudier des relations entre deux variables</strong> — ou entre une <strong>variable numérique</strong> et des <strong>groupes</strong> définis par une catégorie. On parle souvent d’analyses <strong>bivariées</strong> lorsqu’on cherche à quantifier une association, une différence de moyennes ou une dépendance entre modalités ; chaque procédure impose ses <strong>conditions</strong> (effectifs, types de variables, hypothèses du test).
+          </p>
+          <p class="lead">
+            <strong>Test <em>t</em> de Student / ANOVA</strong> : utiles pour examiner si une <strong>différence de moyennes</strong> entre <strong>deux groupes</strong> (test <em>t</em>) ou <strong>plusieurs groupes</strong> (ANOVA) est plutôt compatible avec le <strong>hasard</strong> ou suggère un <strong>écart réel</strong> — sous conditions (effectifs, hypothèses du test, variables adaptées). Exemple d’idée : comparer une mesure numérique selon deux modalités d’une variable catégorielle.
+          </p>
+          <p class="lead">
+            <strong>Test du khi-deux (χ²)</strong> : souvent employé pour mesurer l’<strong>association entre deux variables catégorielles</strong> via un tableau de contingence (ex. croiser deux colonnes de codes ou de catégories).
+          </p>
+          <p class="lead">
+            Il existe <strong>beaucoup d’autres outils</strong> (régressions, tests non paramétriques, modèles plus avancés, etc.) : ce support ne les détaille pas. Nous restons sur le <strong>périmètre EDA</strong> du fil rouge ; <strong>vous êtes invités à explorer</strong> ces pistes en autonomie si le temps et la curiosité vous y mènent.
+          </p>
           <p class="lead"><strong>Ressources en ligne (référence)</strong></p>
           <ul class="cover-list">
             <li><a href="https://fr.wikipedia.org/wiki/Corr%C3%A9lation_de_Pearson" target="_blank" rel="noopener noreferrer">Wikipedia — corrélation de Pearson</a> (définition et interprétation du coefficient <em>r</em>).</li>
@@ -401,6 +413,8 @@ psql -U postgres -d immovision -f import_elysee_tabular.sql</code></pre>
             <li><a href="https://numpy.org/doc/stable/reference/generated/numpy.corrcoef.html" target="_blank" rel="noopener noreferrer">NumPy — <code>corrcoef</code></a> (matrice de corrélation à partir de tableaux).</li>
             <li><a href="https://scikit-learn.org/stable/modules/generated/sklearn.decomposition.PCA.html" target="_blank" rel="noopener noreferrer">scikit-learn — <code>PCA</code></a> (ACP en pratique avec centrage-réduction habituel).</li>
             <li><a href="https://fr.wikipedia.org/wiki/Analyse_en_composantes_principales" target="_blank" rel="noopener noreferrer">Wikipedia — analyse en composantes principales</a> (vue d’ensemble sur l’ACP).</li>
+            <li><a href="https://fr.wikipedia.org/wiki/Test_t_de_Student" target="_blank" rel="noopener noreferrer">Wikipedia — test <em>t</em> de Student</a> ; <a href="https://fr.wikipedia.org/wiki/Analyse_de_la_variance" target="_blank" rel="noopener noreferrer">ANOVA</a> (comparaison de moyennes entre groupes).</li>
+            <li><a href="https://fr.wikipedia.org/wiki/Test_du_%CF%87%C2%B2" target="_blank" rel="noopener noreferrer">Wikipedia — test du khi-deux</a> (association entre variables catégorielles).</li>
           </ul>
           
         </div>
